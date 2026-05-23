@@ -139,7 +139,8 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           </div>
         </PixelPanel>
       </div>
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      {/* 核心功能 - 两排布局 */}
+      <div className="grid grid-cols-4 gap-2 mb-3">
         <PixelButton
           variant="danger"
           size="sm"
@@ -147,10 +148,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('boss');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Swords size={14} />
-          <span className="text-xs">Boss</span>
+          <Swords size={16} />
+          <span className="text-xs hidden sm:inline">Boss</span>
         </PixelButton>
         <PixelButton
           variant="secondary"
@@ -159,10 +160,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('skills');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Brain size={14} />
-          <span className="text-xs">技能</span>
+          <Brain size={16} />
+          <span className="text-xs hidden sm:inline">技能</span>
         </PixelButton>
         <PixelButton
           variant="accent"
@@ -171,10 +172,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('achievements');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Trophy size={14} />
-          <span className="text-xs">成就</span>
+          <Trophy size={16} />
+          <span className="text-xs hidden sm:inline">成就</span>
         </PixelButton>
         <PixelButton
           variant="primary"
@@ -183,11 +184,13 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setShowLeaderboard(true);
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Trophy size={14} />
-          <span className="text-xs">排行</span>
+          <BarChart3 size={16} />
+          <span className="text-xs hidden sm:inline">排行</span>
         </PixelButton>
+      </div>
+      <div className="grid grid-cols-4 gap-2 mb-3">
         <PixelButton
           variant="accent"
           size="sm"
@@ -195,10 +198,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setShowPetPanel(true);
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <PawPrint size={14} />
-          <span className="text-xs">宠物</span>
+          <PawPrint size={16} />
+          <span className="text-xs hidden sm:inline">宠物</span>
         </PixelButton>
         <PixelButton
           variant="primary"
@@ -207,10 +210,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('stats');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <BarChart3 size={14} />
-          <span className="text-xs">统计</span>
+          <BarChart3 size={16} />
+          <span className="text-xs hidden sm:inline">统计</span>
         </PixelButton>
         <PixelButton
           variant="primary"
@@ -219,10 +222,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('map');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Map size={14} />
-          <span className="text-xs">地图</span>
+          <Map size={16} />
+          <span className="text-xs hidden sm:inline">地图</span>
         </PixelButton>
         <PixelButton
           variant="secondary"
@@ -231,11 +234,13 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('story');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <BookOpen size={14} />
-          <span className="text-xs">剧情</span>
+          <BookOpen size={16} />
+          <span className="text-xs hidden sm:inline">剧情</span>
         </PixelButton>
+      </div>
+      <div className="grid grid-cols-4 gap-2 mb-3">
         <PixelButton
           variant="accent"
           size="sm"
@@ -243,10 +248,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('shop');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <ShoppingCart size={14} />
-          <span className="text-xs">商店</span>
+          <ShoppingCart size={16} />
+          <span className="text-xs hidden sm:inline">商店</span>
         </PixelButton>
         <PixelButton
           variant="secondary"
@@ -255,10 +260,10 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('collection');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <Backpack size={14} />
-          <span className="text-xs">收集</span>
+          <Backpack size={16} />
+          <span className="text-xs hidden sm:inline">收集</span>
         </PixelButton>
         <PixelButton
           variant="accent"
@@ -267,11 +272,12 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
             setViewMode('character');
             setSidebarOpen(false);
           }}
-          className="flex items-center justify-center gap-1"
+          className="flex flex-col items-center justify-center gap-1 p-2"
         >
-          <User size={14} />
-          <span className="text-xs">角色</span>
+          <User size={16} />
+          <span className="text-xs hidden sm:inline">角色</span>
         </PixelButton>
+        <div></div>
       </div>
       <div className="grid grid-cols-2 gap-2 mb-3">
         <PixelButton
