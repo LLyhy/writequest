@@ -12,7 +12,7 @@ interface DocumentManagerProps {
 }
 
 export const DocumentManager: React.FC<DocumentManagerProps> = ({ isOpen, onClose }) => {
-  const { loadDocument, activeDocumentId } = useEditorStore();
+  const { loadDocument } = useEditorStore();
 
   const handleSelectDocument = (id: string) => {
     loadDocument(id);

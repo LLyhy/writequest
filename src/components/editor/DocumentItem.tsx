@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Trash2, Edit2, Calendar, Clock, ChevronRight } from 'lucide-react';
+import { FileText, Trash2, Edit2, Calendar, ChevronRight } from 'lucide-react';
 import { PixelButton } from '../ui/PixelButton';
-import { useEditorStore } from '../../stores';
 
 interface DocumentItemProps {
   id: string;

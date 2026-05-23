@@ -10,18 +10,29 @@ interface DocumentListProps {
   onSelectDocument: (id: string) => void;
 }
 
+export interface DocumentData {
+  id: string;
+  title: string;
+  content: string;
+  updatedAt: number;
+}
+
 export const DocumentList: React.FC<DocumentListProps> = ({ onSelectDocument }) => {
   const { 
     documents, 
     activeDocumentId, 
-    loadDocument, 
     deleteDocument,
     createDocument,
   } = useEditorStore();
   
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const documentList = Object.values(documents).sort((a, b) => b.updatedAt - a.updatedAt);
+  const documentList: DocumentData[] = Object.entries(documents).map(([id, doc]) => ({
+    id,
+    title: doc.title,
+    content: doc.content,
+    updatedAt: doc.updatedAt,
+  })).sort((a, b) => b.updatedAt - a.updatedAt);
 
   const filteredDocuments = documentList.filter(doc => 
     doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -42,9 +53,12 @@ export const DocumentList: React.FC<DocumentListProps> = ({ onSelectDocument }) 
     onSelectDocument(id);
   };
 
+  const handleRename = (id: string, newTitle: string) => {
+    useEditorStore.getState().saveDocument(id, newTitle);
+  };
+
   return (
     <div className="h-full flex flex-col">
-      {/* 头部工具栏 */}
       <div className="mb-4 pb-4 border-b-2 border-pixel-border">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-pixel text-white flex items-center gap-2">
@@ -61,7 +75,6 @@ export const DocumentList: React.FC<DocumentListProps> = ({ onSelectDocument }) 
           </PixelButton>
         </div>
 
-        {/* 搜索框 */}
         <div className="relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
           <PixelInput
@@ -74,7 +87,6 @@ export const DocumentList: React.FC<DocumentListProps> = ({ onSelectDocument }) 
         </div>
       </div>
 
-      {/* 文档列表 */}
       <div className="flex-1 overflow-y-auto">
         <AnimatePresence>
           {filteredDocuments.length === 0 ? (
@@ -105,22 +117,13 @@ export const DocumentList: React.FC<DocumentListProps> = ({ onSelectDocument }) 
                 isActive={doc.id === activeDocumentId}
                 onSelect={onSelectDocument}
                 onDelete={deleteDocument}
-                onRename={(id, newTitle) => {
-                  const doc = documents[id];
-                  if (doc) {
-                    const { setContent, ...docWithoutContent } = useEditorStore.getState();
-                    // 我们需要更新 store 中的文档标题
-                    // 这里简单处理，直接保存会更新 updatedAt
-                    useEditorStore.getState().saveDocument(id, newTitle);
-                  }
-                }}
+                onRename={handleRename}
               />
             ))
           )}
         </AnimatePresence>
       </div>
 
-      {/* 统计信息 */}
       <div className="mt-4 pt-4 border-t-2 border-pixel-border">
         <p className="text-xs text-gray-500 font-mono">
           共 {documentList.length} 篇文档

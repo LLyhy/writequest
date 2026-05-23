@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { PixelPanel, PixelButton } from '../ui';
+import { PixelButton } from '../ui';
 import { useHeroStore } from '../../stores';
 import {
   ART_STYLES,
@@ -31,10 +31,12 @@ export const CharacterCustomization: React.FC = () => {
     [appearance.artStyle]
   );
 
-  const currentCharacterStyle = useMemo(() => 
-    CHARACTER_STYLES.includes(appearance.outfitStyle as string) ? appearance.outfitStyle : 'warrior',
-    [appearance.outfitStyle]
-  );
+  const currentCharacterStyle = useMemo((): CharacterStyle => {
+    if (CHARACTER_STYLES.includes(appearance.outfitStyle)) {
+      return appearance.outfitStyle as CharacterStyle;
+    }
+    return 'warrior';
+  }, [appearance.outfitStyle]);
 
   const renderCharacterArt = () => {
     const isInkStyle = appearance.artStyle === 'ink';
