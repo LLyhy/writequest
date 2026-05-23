@@ -1,5 +1,4 @@
 import { ProfilePage } from '../pages/ProfilePage';
-import { PixelButton } from '../components/ui/PixelButton';
 
 interface ProfileViewProps {
   onBack: () => void;

@@ -16,6 +16,7 @@ export interface Character {
   lastWritingAt: number | null;
   streakDays: number; // 连续写作天数
   lastStreakDate: string | null; // 上次连续日期 YYYY-MM-DD
+  bossesDefeated: number; // 击败的怪物数量
 }
 
 // 职业配置

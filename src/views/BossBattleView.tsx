@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useCharacterStore, useGameStore } from '../stores';
+import { useGameStore } from '../stores';
 import { BossBattleComponent, BossSelect } from '../components/boss';
 import { PixelButton } from '../components/ui/PixelButton';
 import type { Boss } from '../types';

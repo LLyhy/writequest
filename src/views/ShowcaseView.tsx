@@ -1,5 +1,4 @@
 import { ShowcasePage } from '../pages/ShowcasePage';
-import { PixelButton } from '../components/ui/PixelButton';
 
 interface ShowcaseViewProps {
   onBack: () => void;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowLeft, TrendingUp, Users, Flame } from 'lucide-react';
+import { Search, ArrowLeft, TrendingUp, Users, Flame, SortDesc } from 'lucide-react';
 import { useShowcaseStore } from '../stores';
 import { WorkCard, WorkDetail, Leaderboard } from '../components/showcase';
 import { PixelPanel, PixelButton, PixelInput } from '../components/ui';
