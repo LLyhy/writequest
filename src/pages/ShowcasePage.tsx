@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, ArrowLeft, SortAsc, SortDesc, TrendingUp, Users, Flame } from 'lucide-react';
 import { useShowcaseStore, useUserProfileStore } from '../stores';

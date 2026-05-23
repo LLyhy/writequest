@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useShowcaseStore, useUserProfileStore, useCharacterStore } from '../stores';
 import { UserProfile } from '../components/showcase';
@@ -12,7 +12,6 @@ interface ProfilePageProps {
 export function ProfilePage({ onBack, userId }: ProfilePageProps) {
   const {
     currentUser,
-    allProfiles,
     createProfile,
     followUser,
     unfollowUser,

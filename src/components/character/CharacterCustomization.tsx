@@ -26,10 +26,10 @@ export const CharacterCustomization: React.FC = () => {
     updateAppearance({ battleCry: random });
   };
 
-  const currentArtConfig = useMemo(() => 
-    ART_STYLES.includes(appearance.artStyle as string) ? ART_STYLE_CONFIGS[appearance.artStyle as ArtStyle] : ART_STYLE_CONFIGS.ink,
-    [appearance.artStyle]
-  );
+  const currentArtConfig = useMemo(() => {
+    const artStyle = appearance.artStyle as ArtStyle;
+    return ART_STYLE_CONFIGS[artStyle] || ART_STYLE_CONFIGS.ink;
+  }, [appearance.artStyle]);
 
   const currentCharacterStyle = useMemo((): CharacterStyle => {
     if (CHARACTER_STYLES.includes(appearance.outfitStyle)) {
