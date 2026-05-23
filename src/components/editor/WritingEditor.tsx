@@ -28,7 +28,6 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   const [showDraftBox, setShowDraftBox] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDocumentManager, setShowDocumentManager] = useState(false);
-  const [showMentorChat, setShowMentorChat] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const {

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { MarkdownToolbar, ViewMode } from './MarkdownToolbar';
 import { MarkdownPreview } from './MarkdownPreview';
 import { PixelPanel } from '../ui/PixelPanel';

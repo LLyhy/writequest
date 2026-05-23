@@ -1,7 +1,4 @@
 import React from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 
 interface MarkdownPreviewProps {
@@ -22,131 +19,40 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({ content, class
     );
   }
 
+  // 简单的 Markdown 解析
+  const renderContent = (text: string) => {
+    let result = text
+      // 标题
+      .replace(/^### (.*$)/gm, '<h3 class="text-xl font-pixel text-white mb-2">$1</h3>')
+      .replace(/^## (.*$)/gm, '<h2 class="text-2xl font-pixel text-pixel-secondary mb-3">$1</h2>')
+      .replace(/^# (.*$)/gm, '<h1 class="text-3xl font-pixel text-pixel-primary mb-4 pb-2 border-b-2 border-pixel-border">$1</h1>')
+      // 粗体和斜体
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="text-pixel-accent italic">$1</em>')
+      // 列表
+      .replace(/^- (.*$)/gm, '<li class="pl-2">$1</li>')
+      .replace(/^\d+\. (.*$)/gm, '<li class="pl-2">$1</li>')
+      // 引用
+      .replace(/^> (.*$)/gm, '<blockquote class="border-l-4 border-pixel-accent pl-4 py-1 my-4 bg-pixel-panel/50 text-gray-300 italic">$1</blockquote>')
+      // 代码
+      .replace(/`([^`]+)`/g, '<code class="bg-pixel-border px-2 py-1 rounded text-pixel-accent text-sm font-mono">$1</code>')
+      // 段落
+      .replace(/^(?!<[hlu]|<blockquote|<code)(.*)$/gm, '<p class="text-gray-300 mb-4 leading-relaxed font-mono">$1</p>');
+
+    // 包装列表
+    result = result
+      .replace(/(<li.*<\/li>)+/g, '<ul class="list-disc list-inside text-gray-300 mb-4 space-y-1 font-mono">$&</ul>');
+
+    return result;
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className={`h-full overflow-y-auto p-6 text-white ${className}`}
-    >
+    <div className={`h-full overflow-y-auto p-6 text-white ${className}`}>
       <div className="prose prose-invert max-w-none">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            h1: ({ ...props }) => (
-              <h1
-                className="text-3xl font-pixel text-pixel-primary mb-4 pb-2 border-b-2 border-pixel-border"
-                {...props}
-              />
-            ),
-            h2: ({ ...props }) => (
-              <h2
-                className="text-2xl font-pixel text-pixel-secondary mb-3"
-                {...props}
-              />
-            ),
-            h3: ({ ...props }) => (
-              <h3
-                className="text-xl font-pixel text-white mb-2"
-                {...props}
-              />
-            ),
-            p: ({ ...props }) => (
-              <p
-                className="text-gray-300 mb-4 leading-relaxed font-mono"
-                {...props}
-              />
-            ),
-            ul: ({ ...props }) => (
-              <ul
-                className="list-disc list-inside text-gray-300 mb-4 space-y-1 font-mono"
-                {...props}
-              />
-            ),
-            ol: ({ ...props }) => (
-              <ol
-                className="list-decimal list-inside text-gray-300 mb-4 space-y-1 font-mono"
-                {...props}
-              />
-            ),
-            li: ({ ...props }) => (
-              <li className="pl-2" {...props} />
-            ),
-            blockquote: ({ ...props }) => (
-              <blockquote
-                className="border-l-4 border-pixel-accent pl-4 py-1 my-4 bg-pixel-panel/50 text-gray-300 italic"
-                {...props}
-              />
-            ),
-            code: ({ inline, className, children, ...props }) => {
-              const match = /language-(\w+)/.exec(className || '');
-              return !inline && match ? (
-                <div className="my-4 rounded-lg overflow-hidden">
-                  <div className="bg-pixel-border px-4 py-2 text-xs text-gray-400 font-mono">
-                    {match[1]}
-                  </div>
-                  <pre className="bg-pixel-bg p-4 overflow-x-auto">
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
-                  </pre>
-                </div>
-              ) : (
-                <code
-                  className="bg-pixel-border px-2 py-1 rounded text-pixel-accent text-sm font-mono"
-                  {...props}
-                >
-                  {children}
-                </code>
-              );
-            },
-            a: ({ ...props }) => (
-              <a
-                className="text-pixel-primary hover:text-pixel-secondary underline transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-                {...props}
-              />
-            ),
-            table: ({ ...props }) => (
-              <div className="my-4 overflow-x-auto">
-                <table
-                  className="w-full border-collapse border-2 border-pixel-border"
-                  {...props}
-                />
-              </div>
-            ),
-            thead: ({ ...props }) => (
-              <thead className="bg-pixel-panel" {...props} />
-            ),
-            th: ({ ...props }) => (
-              <th
-                className="border-2 border-pixel-border px-4 py-2 text-pixel-primary font-pixel"
-                {...props}
-              />
-            ),
-            td: ({ ...props }) => (
-              <td
-                className="border-2 border-pixel-border px-4 py-2 text-gray-300"
-                {...props}
-              />
-            ),
-            strong: ({ ...props }) => (
-              <strong className="text-white font-bold" {...props} />
-            ),
-            em: ({ ...props }) => (
-              <em className="text-pixel-accent italic" {...props} />
-            ),
-            hr: ({ ...props }) => (
-              <hr
-                className="my-8 border-pixel-border"
-                {...props}
-              />
-            ),
-          }}
-        >
-          {content}
-        </ReactMarkdown>
+        <div 
+          dangerouslySetInnerHTML={{ __html: renderContent(content) }} 
+        />
       </div>
-    </motion.div>
+    </div>
   );
 };

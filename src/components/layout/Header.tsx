@@ -4,7 +4,7 @@ import { useCharacterStore, useGameStore, useTutorialStore } from '../../stores'
 import { XPBar } from '../ui/XPBar';
 import { CoinDisplay } from '../ui/CoinDisplay';
 import { LevelBadge } from '../ui/LevelBadge';
-import { PenTool, Settings, LogOut, Home, Users, User, Sparkles, Database, HelpCircle } from 'lucide-react';
+import { PenTool, Settings, LogOut, Home, User, Sparkles, Database, HelpCircle } from 'lucide-react';
 import { PixelButton } from '../ui/PixelButton';
 import { DataExportModal, DataImportModal } from '../data';
 import { TutorialModal } from '../tutorial';
@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   const character = useCharacterStore((state) => state.character);
   const resetCharacter = useCharacterStore((state) => state.resetCharacter);
   const coins = useGameStore((state) => state.coins);
-  const { completed: tutorialCompleted, reset: resetTutorial } = useTutorialStore();
+  const { completed: tutorialCompleted } = useTutorialStore();
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
