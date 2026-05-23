@@ -28,7 +28,7 @@ export const BossBattleComponent: React.FC<BossBattleComponentProps> = ({
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { startBossBattle, endBossBattle, updateBossBattle, addCoins, addWritingHistory } = useGameStore();
-  const { addExp, addWords, character } = useCharacterStore();
+  const { addExp, addWords, addBossDefeated, character } = useCharacterStore();
 
   // 开始战斗
   const handleStartBattle = () => {
@@ -106,6 +106,7 @@ export const BossBattleComponent: React.FC<BossBattleComponentProps> = ({
       addCoins(boss.rewards.coins);
       addExp(boss.rewards.exp);
       addWords(wordCount);
+      addBossDefeated();
       
       // 记录历史
       const writingTime = Math.floor((Date.now() - endedBattle.startTime) / 60000);

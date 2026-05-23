@@ -21,6 +21,7 @@ interface CharacterStoreState {
   checkAndLevelUp: () => boolean;
   updateStreak: () => void;
   resetCharacter: () => void;
+  addBossDefeated: () => void;
 }
 
 export const useCharacterStore = create<CharacterStoreState>()(
@@ -45,6 +46,7 @@ export const useCharacterStore = create<CharacterStoreState>()(
           lastWritingAt: null,
           streakDays: 0,
           lastStreakDate: null,
+          bossesDefeated: 0,
         };
         
         set({ character: newCharacter, isCreating: false });
@@ -198,6 +200,19 @@ export const useCharacterStore = create<CharacterStoreState>()(
           writingSession: null,
           isWriting: false,
           writingHistory: [],
+        });
+      },
+      
+      addBossDefeated: () => {
+        set((state) => {
+          if (!state.character) return state;
+          
+          return {
+            character: {
+              ...state.character,
+              bossesDefeated: state.character.bossesDefeated + 1,
+            },
+          };
         });
       },
     }),
