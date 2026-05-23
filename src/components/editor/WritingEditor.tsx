@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEditorStore, useGameStore, useCharacterStore, useSkillStore } from '../../stores';
+import { useShowcaseStore } from '../../stores/showcaseStore';
+import { useUserProfileStore } from '../../stores/userProfileStore';
 import { calculateWritingExp } from '../../constants/game';
 import { PixelPanel } from '../ui/PixelPanel';
 import { PixelButton } from '../ui/PixelButton';
-import { Play, Square, Trash2, FileText, Clock, Sparkles } from 'lucide-react';
+import { Play, Square, Trash2, FileText, Clock, Sparkles, Upload, Save, FolderOpen } from 'lucide-react';
+import { PublishModal } from '../showcase/PublishModal';
+import { DraftBox } from '../showcase/DraftBox';
+import type { DraftWork } from '../../types/showcase';
 
 interface WritingEditorProps {
   onWordCountChange?: (count: number) => void;
@@ -17,6 +22,9 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   const [sessionStartWordCount, setSessionStartWordCount] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+  const [showDraftBox, setShowDraftBox] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const {
@@ -49,6 +57,8 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   } = useCharacterStore();
 
   const { getSkillEffects } = useSkillStore();
+  const { createDraft, draftWorks, deleteDraft } = useShowcaseStore();
+  const { currentUser, createProfile } = useUserProfileStore();
 
   // 计时器
   useEffect(() => {
@@ -76,6 +86,28 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // 确保用户资料存在（如果不存在则创建）
+  const ensureUserProfile = () => {
+    if (!currentUser && character) {
+      const newProfile = {
+        id: character.id,
+        characterName: character.name,
+        displayName: character.name,
+        avatar: '',
+        bio: '',
+        level: character.level,
+        class: character.class,
+        totalLikes: 0,
+        totalWorks: 0,
+        totalWords: character.totalWords,
+        followers: [],
+        following: [],
+        joinedAt: character.createdAt,
+      };
+      createProfile(newProfile);
+    }
   };
 
   // 处理内容变化
@@ -162,6 +194,37 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
     }
   };
 
+  // 发布作品
+  const handlePublish = () => {
+    ensureUserProfile();
+    setShowPublishModal(true);
+  };
+
+  // 保存草稿
+  const handleSaveDraft = () => {
+    ensureUserProfile();
+    
+    const draft: DraftWork = {
+      id: Math.random().toString(36).substring(2, 9),
+      title: '',
+      description: '',
+      content,
+      tags: [],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    
+    createDraft(draft);
+    setShowSuccess(true);
+    setTimeout(() => setShowSuccess(false), 2000);
+  };
+
+  // 编辑草稿
+  const handleEditDraft = (draft: DraftWork) => {
+    setContent(draft.content);
+    setShowDraftBox(false);
+  };
+
   // 获取技能效果显示
   const skillEffects = getSkillEffects();
   const hasSkillBonus = skillEffects.expBoost > 0 || skillEffects.wordBonus > 0 || skillEffects.coinBoost > 0;
@@ -184,6 +247,23 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             <div className="flex items-center gap-2">
               <Sparkles size={20} />
               <span>升级了! 等级 {character?.level}</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 保存成功提示 */}
+      <AnimatePresence>
+        {showSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -50 }}
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-pixel-primary text-white px-6 py-3 rounded-lg border-2 border-pixel-border shadow-pixel font-pixel"
+          >
+            <div className="flex items-center gap-2">
+              <Save size={20} />
+              <span>草稿保存成功！</span>
             </div>
           </motion.div>
         )}
@@ -236,6 +316,43 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
                 </span>
               </div>
             )}
+
+            {/* 发布和草稿按钮 */}
+            <PixelButton
+              variant="secondary"
+              size="sm"
+              onClick={handleSaveDraft}
+              disabled={!content || !character}
+            >
+              <span className="flex items-center gap-1">
+                <Save size={14} />
+                保存草稿
+              </span>
+            </PixelButton>
+
+            <PixelButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowDraftBox(true)}
+              disabled={!character}
+            >
+              <span className="flex items-center gap-1">
+                <FolderOpen size={14} />
+                草稿箱
+              </span>
+            </PixelButton>
+
+            <PixelButton
+              variant="primary"
+              size="sm"
+              onClick={handlePublish}
+              disabled={!content || !character}
+            >
+              <span className="flex items-center gap-1">
+                <Upload size={14} />
+                发布
+              </span>
+            </PixelButton>
 
             {!isWriting ? (
               <PixelButton
@@ -364,6 +481,23 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
           </motion.div>
         )}
       </div>
+
+      {/* 发布模态框 */}
+      <PublishModal
+        isOpen={showPublishModal}
+        onClose={() => setShowPublishModal(false)}
+        initialContent={content}
+        initialWordCount={wordCount}
+      />
+
+      {/* 草稿箱 */}
+      <DraftBox
+        isOpen={showDraftBox}
+        onClose={() => setShowDraftBox(false)}
+        drafts={draftWorks}
+        onEditDraft={handleEditDraft}
+        onDeleteDraft={deleteDraft}
+      />
     </PixelPanel>
   );
 };

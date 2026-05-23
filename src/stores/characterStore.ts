@@ -1,91 +1,143 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Character, CharacterClass } from '../types';
-import { checkLevelUp, getTodayString, getYesterdayString } from '../constants/game';
+import type { Character, CharacterClass, WritingSession, WritingHistory } from '../types';
+import { CLASS_CONFIGS, LEVEL_CONFIGS } from '../constants/game';
 
-interface CharacterState {
+interface CharacterStoreState {
   character: Character | null;
   isCreating: boolean;
-}
-
-interface CharacterActions {
-  createCharacter: (name: string, characterClass: CharacterClass) => void;
-  updateCharacter: (updates: Partial<Character>) => void;
+  writingSession: WritingSession | null;
+  isWriting: boolean;
+  writingHistory: WritingHistory[];
+  
+  createCharacter: (name: string, classType: CharacterClass) => void;
+  setIsCreating: (isCreating: boolean) => void;
+  startWriting: () => void;
+  updateWriting: (content: string) => void;
+  endWriting: () => { wordCount: number; expGained: number };
   addExp: (exp: number) => void;
   addWords: (words: number) => void;
   addWritingTime: (minutes: number) => void;
   checkAndLevelUp: () => boolean;
-  updateStreak: () => { streakIncreased: boolean; newStreak: number };
+  updateStreak: () => void;
   resetCharacter: () => void;
-  setIsCreating: (isCreating: boolean) => void;
 }
 
-const generateId = () => Math.random().toString(36).substring(2, 9);
-
-const createInitialCharacter = (name: string, characterClass: CharacterClass): Character => ({
-  id: generateId(),
-  name,
-  class: characterClass,
-  level: 1,
-  exp: 0,
-  totalWords: 0,
-  totalWritingTime: 0,
-  createdAt: Date.now(),
-  lastWritingAt: null,
-  streakDays: 0,
-  lastStreakDate: null,
-});
-
-export const useCharacterStore = create<CharacterState & CharacterActions>()(
+export const useCharacterStore = create<CharacterStoreState>()(
   persist(
     (set, get) => ({
-      // State
       character: null,
       isCreating: false,
-
-      // Actions
-      createCharacter: (name, characterClass) => {
-        const newCharacter = createInitialCharacter(name, characterClass);
+      writingSession: null,
+      isWriting: false,
+      writingHistory: [],
+      
+      createCharacter: (name: string, classType: CharacterClass) => {
+        const newCharacter: Character = {
+          id: Date.now().toString(),
+          name,
+          class: classType,
+          level: 1,
+          exp: 0,
+          totalWords: 0,
+          totalWritingTime: 0,
+          createdAt: Date.now(),
+          lastWritingAt: null,
+          streakDays: 0,
+          lastStreakDate: null,
+        };
+        
         set({ character: newCharacter, isCreating: false });
       },
-
-      updateCharacter: (updates) => {
-        set((state) => ({
-          character: state.character
-            ? { ...state.character, ...updates }
-            : null,
-        }));
+      
+      setIsCreating: (isCreating: boolean) => {
+        set({ isCreating });
       },
-
-      addExp: (exp) => {
+      
+      startWriting: () => {
+        const newSession: WritingSession = {
+          id: Date.now().toString(),
+          startTime: Date.now(),
+          endTime: null,
+          wordCount: 0,
+          content: '',
+          expGained: 0,
+        };
+        
+        set({ writingSession: newSession, isWriting: true });
+      },
+      
+      updateWriting: (content: string) => {
         set((state) => {
-          if (!state.character) return state;
-          const newExp = state.character.exp + exp;
+          if (!state.writingSession) return state;
+          
+          const wordCount = content.trim().split(/\s+/).filter(w => w.length > 0).length;
+          
           return {
-            character: {
-              ...state.character,
-              exp: newExp,
+            writingSession: {
+              ...state.writingSession,
+              content,
+              wordCount,
             },
           };
         });
       },
-
-      addWords: (words) => {
+      
+      endWriting: () => {
+        const { writingSession, character } = get();
+        
+        if (!writingSession || !character) {
+          return { wordCount: 0, expGained: 0 };
+        }
+        
+        const classConfig = CLASS_CONFIGS.find(c => c.id === character.class);
+        const wordExp = writingSession.wordCount * (classConfig?.bonus.expMultiplier || 1);
+        const expGained = Math.floor(wordExp);
+        
+        set((state) => ({
+          writingSession: null,
+          isWriting: false,
+          character: state.character ? {
+            ...state.character,
+            totalWords: state.character.totalWords + writingSession.wordCount,
+            exp: state.character.exp + expGained,
+            lastWritingAt: Date.now(),
+          } : null,
+        }));
+        
+        return { wordCount: writingSession.wordCount, expGained };
+      },
+      
+      addExp: (exp: number) => {
         set((state) => {
           if (!state.character) return state;
+          
+          return {
+            character: {
+              ...state.character,
+              exp: state.character.exp + exp,
+            },
+          };
+        });
+      },
+      
+      addWords: (words: number) => {
+        set((state) => {
+          if (!state.character) return state;
+          
           return {
             character: {
               ...state.character,
               totalWords: state.character.totalWords + words,
-              lastWritingAt: Date.now(),
             },
           };
         });
       },
-
-      addWritingTime: (minutes) => {
+      
+      addWritingTime: (minutes: number) => {
         set((state) => {
           if (!state.character) return state;
+          
           return {
             character: {
               ...state.character,
@@ -94,69 +146,59 @@ export const useCharacterStore = create<CharacterState & CharacterActions>()(
           };
         });
       },
-
+      
       checkAndLevelUp: () => {
         const { character } = get();
+        
         if (!character) return false;
-
-        const canLevelUp = checkLevelUp(character.exp, character.level);
-        if (canLevelUp) {
-          const nextLevel = character.level + 1;
-
-          set({
-            character: {
-              ...character,
-              level: nextLevel,
-            },
-          });
+        
+        const nextLevel = LEVEL_CONFIGS.find(l => l.level === character.level + 1);
+        if (nextLevel && character.exp >= nextLevel.expRequired) {
+          set((state) => ({
+            character: state.character ? {
+              ...state.character,
+              level: state.character.level + 1,
+            } : null,
+          }));
           return true;
         }
+        
         return false;
       },
-
+      
       updateStreak: () => {
-        const { character } = get();
-        if (!character) return { streakIncreased: false, newStreak: 0 };
-
-        const today = getTodayString();
-        const yesterday = getYesterdayString();
-        const lastStreakDate = character.lastStreakDate;
-
-        // 如果今天已经记录过，不增加连续天数
-        if (lastStreakDate === today) {
-          return { streakIncreased: false, newStreak: character.streakDays };
-        }
-
-        let newStreak = character.streakDays;
-
-        // 如果是昨天写的，连续天数+1
-        if (lastStreakDate === yesterday) {
-          newStreak = character.streakDays + 1;
-        } else if (lastStreakDate === null || lastStreakDate < yesterday) {
-          // 如果断更了，重置为1
-          newStreak = 1;
-        }
-
-        set({
-          character: {
-            ...character,
-            streakDays: newStreak,
-            lastStreakDate: today,
-          },
+        set((state) => {
+          if (!state.character) return state;
+          
+          const today = new Date().toISOString().split('T')[0];
+          const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          
+          let newStreakDays = state.character.streakDays;
+          
+          if (state.character.lastStreakDate === yesterday) {
+            newStreakDays += 1;
+          } else if (state.character.lastStreakDate !== today) {
+            newStreakDays = 1;
+          }
+          
+          return {
+            character: {
+              ...state.character,
+              streakDays: newStreakDays,
+              lastStreakDate: today,
+            },
+          };
         });
-
-        return {
-          streakIncreased: newStreak > character.streakDays,
-          newStreak,
-        };
       },
-
+      
       resetCharacter: () => {
-        set({ character: null, isCreating: false });
-      },
-
-      setIsCreating: (isCreating) => {
-        set({ isCreating });
+        set({ 
+          character: null, 
+          isCreating: true,
+          writingSession: null,
+          isWriting: false,
+          writingHistory: [],
+        });
       },
     }),
     {

@@ -1,4 +1,4 @@
-import type { ClassConfig, LevelConfig, Skill, Boss, Achievement, MapRegion, StoryChapter, ThemeSkin, FontEffect, Badge, InspirationFragment, WritingMaterial } from '../types';
+import type { ClassConfig, LevelConfig, Skill, Boss, Achievement, MapRegion, StoryChapter, ThemeSkin, FontEffect, Badge, InspirationFragment, WritingMaterial, AdventureStory, Equipment, LootBoxPrize, CharacterAppearance, CharacterColor, CharacterStyle } from '../types';
 
 // 职业配置
 export const CLASS_CONFIGS: ClassConfig[] = [
@@ -1389,3 +1389,418 @@ export function getYesterdayString(): string {
   date.setDate(date.getDate() - 1);
   return date.toISOString().split('T')[0];
 }
+
+// ==================== 冒险创作模式配置 ====================
+
+// 勇者讨伐恶龙冒险故事
+export const DRAGON_QUEST_ADVENTURE: AdventureStory = {
+  id: 'dragon_quest',
+  title: '勇者讨伐恶龙',
+  description: '一段传奇的冒险之旅，由你书写！',
+  icon: '🐉',
+  currentNodeId: 'intro',
+  completed: false,
+  unlocked: true,
+  nodes: [
+    {
+      id: 'intro',
+      type: 'intro',
+      title: '第一章：勇者的启程',
+      description: '在和平的小村庄里，恶龙突然来袭，作为勇者的你决定踏上征程...',
+      prompt: '请描写你作为勇者，从村庄出发时的心情和场景，包括村民们的送别。',
+      minWords: 100,
+      reward: { exp: 200, coins: 50 },
+      nextNodes: ['forest'],
+      completed: false,
+    },
+    {
+      id: 'forest',
+      type: 'choice',
+      title: '第二章：迷雾森林',
+      description: '你来到了神秘的迷雾森林，这里有两条路...',
+      prompt: '请描写你在森林中的选择，以及路上遇到的奇遇或挑战。',
+      minWords: 150,
+      reward: { exp: 300, coins: 100 },
+      nextNodes: ['village', 'cave'],
+      completed: false,
+    },
+    {
+      id: 'village',
+      type: 'choice',
+      title: '分支：精灵村庄',
+      description: '你选择了左边的路，发现了一个隐藏的精灵村庄...',
+      prompt: '请描写你与精灵们的相遇，他们可能给你什么帮助或信息？',
+      minWords: 120,
+      reward: { exp: 250, coins: 80 },
+      nextNodes: ['mountain'],
+      completed: false,
+    },
+    {
+      id: 'cave',
+      type: 'choice',
+      title: '分支：神秘洞穴',
+      description: '你选择了右边的路，发现了一个古老的神秘洞穴...',
+      prompt: '请描写你在洞穴中的探险，发现了什么宝藏或秘密？',
+      minWords: 120,
+      reward: { exp: 250, coins: 80 },
+      nextNodes: ['mountain'],
+      completed: false,
+    },
+    {
+      id: 'mountain',
+      type: 'battle',
+      title: '第三章：恶龙的巢穴',
+      description: '你终于到达了恶龙所在的火山脚下，准备最后的战斗！',
+      prompt: '请描写你与恶龙的史诗般战斗！',
+      minWords: 200,
+      requiredKeyWords: ['剑', '勇气', '胜利'],
+      reward: { exp: 500, coins: 200 },
+      nextNodes: ['ending'],
+      completed: false,
+    },
+    {
+      id: 'ending',
+      type: 'ending',
+      title: '终章：传奇的诞生',
+      description: '恶龙被击败了！你成为了传说中的勇者！',
+      prompt: '请描写胜利后的场景，人们如何欢呼，你的感受如何？',
+      minWords: 150,
+      reward: { exp: 400, coins: 150 },
+      nextNodes: [],
+      completed: false,
+    },
+  ],
+};
+
+// 所有冒险故事
+export const ADVENTURE_STORIES: AdventureStory[] = [
+  DRAGON_QUEST_ADVENTURE,
+];
+
+// 冒险模式反馈模板（模拟 AI 反馈）
+export const ADVENTURE_FEEDBACK_TEMPLATES = [
+  "太棒了！这段描写非常生动！继续保持！",
+  "你的想象力真丰富！我已经迫不及待想知道接下来发生什么了！",
+  "写得真好！场景感很强，人物形象也很丰满！",
+  "精彩！你的文字很有感染力！",
+  "这一段太出色了！继续你的冒险吧！",
+  "非常有创意！我喜欢这个情节发展！",
+];
+
+// 获取随机反馈
+export function getRandomAdventureFeedback(): string {
+  return ADVENTURE_FEEDBACK_TEMPLATES[Math.floor(Math.random() * ADVENTURE_FEEDBACK_TEMPLATES.length)];
+}
+
+// 检查内容是否包含关键词
+export function checkKeyWords(content: string, keyWords: string[]): boolean {
+  const lowerContent = content.toLowerCase();
+  return keyWords.every(kw => lowerContent.includes(kw.toLowerCase()));
+}
+
+// ==================== 装备系统配置 ====================
+
+// 所有装备设计
+export const ALL_EQUIPMENT: Equipment[] = [
+  // 头盔 - 6套
+  { id: 'helmet_1', name: '新手布帽', description: '基础的布料帽子', slot: 'helmet', rarity: 'common', icon: '🧢', stats: { attack: 0, defense: 2, speed: 1, luck: 0 }, unlocked: false, equipped: false },
+  { id: 'helmet_2', name: '铁盔', description: '坚固的铁质头盔', slot: 'helmet', rarity: 'uncommon', icon: '⛑️', stats: { attack: 0, defense: 5, speed: 0, luck: 1 }, unlocked: false, equipped: false },
+  { id: 'helmet_3', name: '精灵兜帽', description: '精灵制作的魔法兜帽', slot: 'helmet', rarity: 'rare', icon: '🎭', stats: { attack: 2, defense: 8, speed: 3, luck: 2 }, unlocked: false, equipped: false },
+  { id: 'helmet_4', name: '龙鳞冠', description: '由龙鳞制成的华丽头盔', slot: 'helmet', rarity: 'epic', icon: '👑', stats: { attack: 5, defense: 12, speed: 4, luck: 5 }, specialEffect: '获得额外10%经验', unlocked: false, equipped: false },
+  { id: 'helmet_5', name: '暗影面甲', description: '神秘的暗影能量汇聚', slot: 'helmet', rarity: 'legendary', icon: '🎯', stats: { attack: 10, defense: 15, speed: 6, luck: 8 }, specialEffect: '暴击率增加15%', unlocked: false, equipped: false },
+  { id: 'helmet_6', name: '创世神冠', description: '传说中创世神的王冠', slot: 'helmet', rarity: 'mythical', icon: '🌟', stats: { attack: 20, defense: 25, speed: 10, luck: 15 }, specialEffect: '所有属性翻倍', unlocked: false, equipped: false },
+  { id: 'helmet_7', name: '冒险者帽', description: '冒险者标志性的帽子', slot: 'helmet', rarity: 'common', icon: '🎩', stats: { attack: 1, defense: 3, speed: 2, luck: 1 }, unlocked: false, equipped: false },
+  
+  // 盔甲 - 6套
+  { id: 'armor_1', name: '新手布衣', description: '基础的布料衣服', slot: 'armor', rarity: 'common', icon: '👕', stats: { attack: 0, defense: 5, speed: 2, luck: 0 }, unlocked: false, equipped: false },
+  { id: 'armor_2', name: '铁甲', description: '坚固的铁制护甲', slot: 'armor', rarity: 'uncommon', icon: '🛡️', stats: { attack: 1, defense: 12, speed: 0, luck: 1 }, unlocked: false, equipped: false },
+  { id: 'armor_3', name: '精灵锁甲', description: '精灵编织的魔法锁甲', slot: 'armor', rarity: 'rare', icon: '⚔️', stats: { attack: 3, defense: 18, speed: 5, luck: 3 }, unlocked: false, equipped: false },
+  { id: 'armor_4', name: '龙鳞甲', description: '由龙鳞制成的传奇护甲', slot: 'armor', rarity: 'epic', icon: '🐉', stats: { attack: 8, defense: 30, speed: 8, luck: 6 }, specialEffect: '获得额外20%金币', unlocked: false, equipped: false },
+  { id: 'armor_5', name: '暗影战袍', description: '蕴含暗影之力的战袍', slot: 'armor', rarity: 'legendary', icon: '🌑', stats: { attack: 15, defense: 40, speed: 12, luck: 10 }, specialEffect: '闪避率增加20%', unlocked: false, equipped: false },
+  { id: 'armor_6', name: '创世神铠', description: '传说中创世神的铠甲', slot: 'armor', rarity: 'mythical', icon: '✨', stats: { attack: 30, defense: 60, speed: 20, luck: 20 }, specialEffect: '免疫所有负面效果', unlocked: false, equipped: false },
+  { id: 'armor_7', name: '旅者斗篷', description: '旅行必备的轻便斗篷', slot: 'armor', rarity: 'common', icon: '🧥', stats: { attack: 1, defense: 8, speed: 4, luck: 2 }, unlocked: false, equipped: false },
+  
+  // 腿甲 - 6套
+  { id: 'leggings_1', name: '新手布裤', description: '基础的布料裤子', slot: 'leggings', rarity: 'common', icon: '👖', stats: { attack: 0, defense: 3, speed: 3, luck: 0 }, unlocked: false, equipped: false },
+  { id: 'leggings_2', name: '铁护腿', description: '坚固的铁制护腿', slot: 'leggings', rarity: 'uncommon', icon: '🦵', stats: { attack: 0, defense: 8, speed: 1, luck: 1 }, unlocked: false, equipped: false },
+  { id: 'leggings_3', name: '精灵腿甲', description: '精灵制作的轻便腿甲', slot: 'leggings', rarity: 'rare', icon: '💨', stats: { attack: 2, defense: 12, speed: 8, luck: 2 }, unlocked: false, equipped: false },
+  { id: 'leggings_4', name: '龙鳞腿甲', description: '由龙鳞制成的华丽腿甲', slot: 'leggings', rarity: 'epic', icon: '⚡', stats: { attack: 6, defense: 20, speed: 15, luck: 5 }, specialEffect: '移动速度增加30%', unlocked: false, equipped: false },
+  { id: 'leggings_5', name: '暗影步履', description: '踏影而行的神秘腿甲', slot: 'leggings', rarity: 'legendary', icon: '🌫️', stats: { attack: 12, defense: 25, speed: 20, luck: 8 }, specialEffect: '先攻权永远在你', unlocked: false, equipped: false },
+  { id: 'leggings_6', name: '创世神靴', description: '传说中创世神的靴子', slot: 'leggings', rarity: 'mythical', icon: '🌈', stats: { attack: 25, defense: 40, speed: 35, luck: 15 }, specialEffect: '可以瞬间移动', unlocked: false, equipped: false },
+  { id: 'leggings_7', name: '冒险者靴', description: '适合长途旅行的靴子', slot: 'leggings', rarity: 'common', icon: '👢', stats: { attack: 1, defense: 5, speed: 6, luck: 1 }, unlocked: false, equipped: false },
+  
+  // 武器 - 6套
+  { id: 'weapon_1', name: '新手木剑', description: '基础的木制练习剑', slot: 'weapon', rarity: 'common', icon: '🪵', stats: { attack: 3, defense: 0, speed: 2, luck: 0 }, unlocked: false, equipped: false },
+  { id: 'weapon_2', name: '铁剑', description: '坚固的铁制长剑', slot: 'weapon', rarity: 'uncommon', icon: '⚔️', stats: { attack: 8, defense: 1, speed: 1, luck: 1 }, unlocked: false, equipped: false },
+  { id: 'weapon_3', name: '精灵长弓', description: '精灵制作的魔法长弓', slot: 'weapon', rarity: 'rare', icon: '🏹', stats: { attack: 15, defense: 2, speed: 5, luck: 3 }, unlocked: false, equipped: false },
+  { id: 'weapon_4', name: '龙息剑', description: '蕴含龙焰的传奇之剑', slot: 'weapon', rarity: 'epic', icon: '🔥', stats: { attack: 25, defense: 5, speed: 8, luck: 6 }, specialEffect: '攻击附带灼烧伤害', unlocked: false, equipped: false },
+  { id: 'weapon_5', name: '暗影之刃', description: '暗影凝聚而成的利刃', slot: 'weapon', rarity: 'legendary', icon: '🗡️', stats: { attack: 40, defense: 8, speed: 12, luck: 10 }, specialEffect: '无视30%防御', unlocked: false, equipped: false },
+  { id: 'weapon_6', name: '创世神剑', description: '传说中创世神的武器', slot: 'weapon', rarity: 'mythical', icon: '💫', stats: { attack: 80, defense: 15, speed: 20, luck: 20 }, specialEffect: '一击必杀', unlocked: false, equipped: false },
+  { id: 'weapon_7', name: '冒险者匕首', description: '实用的防身匕首', slot: 'weapon', rarity: 'common', icon: '🔪', stats: { attack: 5, defense: 1, speed: 4, luck: 2 }, unlocked: false, equipped: false },
+  
+  // 戒指 - 6套
+  { id: 'ring_1', name: '新手铜戒', description: '基础的铜制戒指', slot: 'ring', rarity: 'common', icon: '💍', stats: { attack: 1, defense: 1, speed: 1, luck: 1 }, unlocked: false, equipped: false },
+  { id: 'ring_2', name: '银戒指', description: '精致的银制戒指', slot: 'ring', rarity: 'uncommon', icon: '💎', stats: { attack: 3, defense: 3, speed: 2, luck: 3 }, unlocked: false, equipped: false },
+  { id: 'ring_3', name: '精灵指环', description: '精灵制作的魔法戒指', slot: 'ring', rarity: 'rare', icon: '🔮', stats: { attack: 5, defense: 5, speed: 5, luck: 6 }, unlocked: false, equipped: false },
+  { id: 'ring_4', name: '龙心戒指', description: '蕴含龙心之力的戒指', slot: 'ring', rarity: 'epic', icon: '🐲', stats: { attack: 10, defense: 10, speed: 8, luck: 12 }, specialEffect: '所有属性+10%', unlocked: false, equipped: false },
+  { id: 'ring_5', name: '暗影之戒', description: '暗影能量凝聚的戒指', slot: 'ring', rarity: 'legendary', icon: '🌙', stats: { attack: 15, defense: 15, speed: 12, luck: 18 }, specialEffect: '幸运值翻倍', unlocked: false, equipped: false },
+  { id: 'ring_6', name: '创世神戒', description: '传说中创世神的戒指', slot: 'ring', rarity: 'mythical', icon: '👁️', stats: { attack: 30, defense: 30, speed: 25, luck: 35 }, specialEffect: '可以实现一个愿望', unlocked: false, equipped: false },
+  { id: 'ring_7', name: '冒险者戒指', description: '带来好运的戒指', slot: 'ring', rarity: 'common', icon: '✨', stats: { attack: 2, defense: 2, speed: 2, luck: 4 }, unlocked: false, equipped: false },
+];
+
+// ==================== 抽奖系统配置 ====================
+
+// 抽奖奖品池
+export const LOOT_BOX_PRIZES: LootBoxPrize[] = [
+  // 装备奖品
+  { id: 'loot_helmet_1', type: 'equipment', name: '新手布帽', description: '基础的布料帽子', icon: '🧢', rarity: 'common', value: 'helmet_1', dropRate: 0.15 },
+  { id: 'loot_helmet_2', type: 'equipment', name: '铁盔', description: '坚固的铁质头盔', icon: '⛑️', rarity: 'uncommon', value: 'helmet_2', dropRate: 0.10 },
+  { id: 'loot_helmet_3', type: 'equipment', name: '精灵兜帽', description: '精灵制作的魔法兜帽', icon: '🎭', rarity: 'rare', value: 'helmet_3', dropRate: 0.05 },
+  { id: 'loot_helmet_4', type: 'equipment', name: '龙鳞冠', description: '由龙鳞制成的华丽头盔', icon: '👑', rarity: 'epic', value: 'helmet_4', dropRate: 0.02 },
+  { id: 'loot_helmet_5', type: 'equipment', name: '暗影面甲', description: '神秘的暗影能量汇聚', icon: '🎯', rarity: 'legendary', value: 'helmet_5', dropRate: 0.01 },
+  
+  { id: 'loot_armor_1', type: 'equipment', name: '新手布衣', description: '基础的布料衣服', icon: '👕', rarity: 'common', value: 'armor_1', dropRate: 0.15 },
+  { id: 'loot_armor_2', type: 'equipment', name: '铁甲', description: '坚固的铁制护甲', icon: '🛡️', rarity: 'uncommon', value: 'armor_2', dropRate: 0.10 },
+  { id: 'loot_armor_3', type: 'equipment', name: '精灵锁甲', description: '精灵编织的魔法锁甲', icon: '⚔️', rarity: 'rare', value: 'armor_3', dropRate: 0.05 },
+  { id: 'loot_armor_4', type: 'equipment', name: '龙鳞甲', description: '由龙鳞制成的传奇护甲', icon: '🐉', rarity: 'epic', value: 'armor_4', dropRate: 0.02 },
+  
+  { id: 'loot_legging_1', type: 'equipment', name: '新手布裤', description: '基础的布料裤子', icon: '👖', rarity: 'common', value: 'leggings_1', dropRate: 0.15 },
+  { id: 'loot_legging_2', type: 'equipment', name: '铁护腿', description: '坚固的铁制护腿', icon: '🦵', rarity: 'uncommon', value: 'leggings_2', dropRate: 0.10 },
+  
+  { id: 'loot_weapon_1', type: 'equipment', name: '新手木剑', description: '基础的木制练习剑', icon: '🪵', rarity: 'common', value: 'weapon_1', dropRate: 0.15 },
+  { id: 'loot_weapon_2', type: 'equipment', name: '铁剑', description: '坚固的铁制长剑', icon: '⚔️', rarity: 'uncommon', value: 'weapon_2', dropRate: 0.10 },
+  
+  { id: 'loot_ring_1', type: 'equipment', name: '新手铜戒', description: '基础的铜制戒指', icon: '💍', rarity: 'common', value: 'ring_1', dropRate: 0.15 },
+  
+  // 金币奖品
+  { id: 'loot_coins_50', type: 'coins', name: '50金币', description: '获得50金币', icon: '💰', rarity: 'common', value: 50, dropRate: 0.20 },
+  { id: 'loot_coins_100', type: 'coins', name: '100金币', description: '获得100金币', icon: '🪙', rarity: 'uncommon', value: 100, dropRate: 0.10 },
+  { id: 'loot_coins_300', type: 'coins', name: '300金币', description: '获得300金币', icon: '💵', rarity: 'rare', value: 300, dropRate: 0.05 },
+  { id: 'loot_coins_500', type: 'coins', name: '500金币', description: '获得500金币', icon: '💎', rarity: 'epic', value: 500, dropRate: 0.02 },
+  
+  // 经验奖品
+  { id: 'loot_exp_100', type: 'exp', name: '100经验', description: '获得100经验', icon: '⭐', rarity: 'common', value: 100, dropRate: 0.15 },
+  { id: 'loot_exp_250', type: 'exp', name: '250经验', description: '获得250经验', icon: '🌟', rarity: 'uncommon', value: 250, dropRate: 0.08 },
+  { id: 'loot_exp_500', type: 'exp', name: '500经验', description: '获得500经验', icon: '✨', rarity: 'rare', value: 500, dropRate: 0.04 },
+  { id: 'loot_exp_1000', type: 'exp', name: '1000经验', description: '获得1000经验', icon: '💫', rarity: 'epic', value: 1000, dropRate: 0.015 },
+  
+  // 特殊奖品
+  { id: 'loot_mythical_helmet', type: 'equipment', name: '创世神冠', description: '传说中创世神的王冠', icon: '🌟', rarity: 'mythical', value: 'helmet_6', dropRate: 0.002 },
+  { id: 'loot_mythical_weapon', type: 'equipment', name: '创世神剑', description: '传说中创世神的武器', icon: '💫', rarity: 'mythical', value: 'weapon_6', dropRate: 0.002 },
+];
+
+// 每日任务完成后奖励抽奖次数
+export const DAILY_QUEST_DRAW_REWARD = 1;
+
+// 抽取奖品的函数
+export function drawLootBox(): LootBoxPrize {
+  const random = Math.random();
+  let cumulative = 0;
+  
+  for (const prize of LOOT_BOX_PRIZES) {
+    cumulative += prize.dropRate;
+    if (random <= cumulative) {
+      return prize;
+    }
+  }
+  
+  return LOOT_BOX_PRIZES[0];
+}
+
+// ==================== 主角自定义系统配置 ====================
+
+// 性别选项
+export const CHARACTER_GENDERS: CharacterGender[] = ['male', 'female'];
+
+// 艺术风格选项
+export const ART_STYLES: ArtStyle[] = ['ink', 'oil', 'watercolor', 'minimalist'];
+
+// 艺术风格配置
+export const ART_STYLE_CONFIGS: Record<ArtStyle, {
+  name: string;
+  icon: string;
+  description: string;
+  shortDesc: string;
+  background: string;
+  canvasBackground: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  stroke: string;
+  filter: string;
+  hueRotate?: string;
+  saturation?: string;
+}> = {
+  ink: {
+    name: '国风古墨',
+    icon: '🖌️',
+    description: '东方传统水墨艺术，浓淡干湿，意境深远',
+    shortDesc: '水墨丹青',
+    background: '#1a1a1a',
+    canvasBackground: 'linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 50%, #0d0d0d 100%)',
+    primary: '#e8e8e8',
+    secondary: '#888888',
+    accent: '#c9a962',
+    stroke: '#ffffff',
+    filter: 'url(#inkFilter)',
+    saturation: '0',
+    hueRotate: '0deg'
+  },
+  oil: {
+    name: '西欧油画',
+    icon: '🎨',
+    description: '文艺复兴古典油画，厚重笔触，神圣庄严',
+    shortDesc: '古典油画',
+    background: '#2d1f14',
+    canvasBackground: 'linear-gradient(145deg, #4a321f 0%, #2d1f14 50%, #1a120a 100%)',
+    primary: '#f0d8a8',
+    secondary: '#c9a66b',
+    accent: '#d4af37',
+    stroke: '#2d1f14',
+    filter: 'url(#oilFilter)',
+    saturation: '1.2',
+    hueRotate: '0deg'
+  },
+  watercolor: {
+    name: '水彩淡彩',
+    icon: '💧',
+    description: '清新雅致的水彩风格，柔和通透',
+    shortDesc: '清新水彩',
+    background: '#f5f8fc',
+    canvasBackground: 'linear-gradient(145deg, #e8f0f8 0%, #f5f8fc 50%, #f0f4f8 100%)',
+    primary: '#5a7fa5',
+    secondary: '#7a9fbb',
+    accent: '#b895c9',
+    stroke: '#3d5a7a',
+    filter: 'url(#watercolorFilter)',
+    saturation: '0.9',
+    hueRotate: '0deg'
+  },
+  minimalist: {
+    name: '极简神性',
+    icon: '✨',
+    description: '极简线条勾勒神圣之美，空灵纯净',
+    shortDesc: '极简神圣',
+    background: '#050508',
+    canvasBackground: 'linear-gradient(180deg, #12121a 0%, #0a0a0f 50%, #050508 100%)',
+    primary: '#f0f0f0',
+    secondary: '#8888a0',
+    accent: '#e0c060',
+    stroke: '#ffffff',
+    filter: 'none',
+    saturation: '1.1',
+    hueRotate: '0deg'
+  }
+};
+
+// 皮肤色调选项
+export const SKIN_TONES: SkinTone[] = ['#FDEBD0', '#F5CBA7', '#E8DAEF', '#D7BDE2', '#C39BD3', '#BB8FCE', '#AED6F1', '#AED6F1', '#85C1E9', '#5DADE2', '#58D68D', '#82E0AA', '#F8C471', '#F0B27A', '#E59866', '#CA6F1E'];
+
+// 发色选项
+export const HAIR_COLORS: HairColor[] = ['#1A1A1A', '#2C1810', '#4A2C17', '#6B4423', '#8B5A2B', '#D4A574', '#F5DEB3', '#FFD700', '#FF6B35', '#E63946', '#9B59B6', '#3498DB', '#2ECC71', '#1ABC9C'];
+
+// 眼睛颜色选项
+export const EYE_COLORS: EyeColor[] = ['#1A1A1A', '#4A3728', '#5D4037', '#795548', '#8D6E63', '#607D8B', '#455A64', '#37474F', '#263238', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50'];
+
+// 发型选项
+export const HAIR_STYLES: HairStyle[] = ['short_messy', 'short_neat', 'long_flowing', 'long_wavy', 'ponytail', 'bun', 'spiky', 'bob', 'braid'];
+
+// 发型配置
+export const HAIR_STYLE_CONFIGS = {
+  short_messy: { name: '凌乱短发', description: '随性自然的短发' },
+  short_neat: { name: '整齐短发', description: '整洁利落的短发' },
+  long_flowing: { name: '飘逸长发', description: '柔顺飘逸的长发' },
+  long_wavy: { name: '波浪卷发', description: '优雅的波浪卷发' },
+  ponytail: { name: '马尾辫', description: '活力四射的马尾' },
+  bun: { name: '丸子头', description: '可爱的丸子头' },
+  spiky: { name: '刺猬头', description: '个性十足的刺头' },
+  bob: { name: '波波头', description: '时尚的波波头' },
+  braid: { name: '麻花辫', description: '精致的麻花辫' },
+};
+
+// 眉形选项
+export const EYEBROW_STYLES: EyebrowStyle[] = ['thin', 'natural', 'thick', 'arched', 'straight'];
+
+// 眉形配置
+export const EYEBROW_STYLE_CONFIGS = {
+  thin: { name: '细眉', description: '纤细精致的眉毛' },
+  natural: { name: '自然眉', description: '自然柔和的眉毛' },
+  thick: { name: '粗眉', description: '浓密英气的眉毛' },
+  arched: { name: '挑眉', description: '高挑有型的挑眉' },
+  straight: { name: '平眉', description: '平直端正的眉毛' },
+};
+
+// 鼻型选项
+export const NOSE_STYLES: NoseStyle[] = ['small', 'medium', 'large', 'straight', 'aquiline'];
+
+// 鼻型配置
+export const NOSE_STYLE_CONFIGS = {
+  small: { name: '小鼻子', description: '小巧精致的鼻子' },
+  medium: { name: '中鼻子', description: '适中标准的鼻子' },
+  large: { name: '大鼻子', description: '大气有型的鼻子' },
+  straight: { name: '直鼻梁', description: '笔直高挺的鼻梁' },
+  aquiline: { name: '鹰钩鼻', description: '个性的鹰钩鼻' },
+};
+
+// 唇形选项
+export const LIP_STYLES: LipStyle[] = ['thin', 'natural', 'full', 'heart'];
+
+// 唇形配置
+export const LIP_STYLE_CONFIGS = {
+  thin: { name: '薄唇', description: '精致薄唇' },
+  natural: { name: '自然唇', description: '标准自然的唇形' },
+  full: { name: '厚唇', description: '饱满性感的厚唇' },
+  heart: { name: '心形唇', description: '可爱的心形唇' },
+};
+
+// 下巴形状选项
+export const JAW_STYLES: JawStyle[] = ['soft', 'defined', 'sharp', 'square'];
+
+// 下巴形状配置
+export const JAW_STYLE_CONFIGS = {
+  soft: { name: '圆润下巴', description: '柔和圆润的下巴' },
+  defined: { name: '轮廓下巴', description: '轮廓分明的下巴' },
+  sharp: { name: '尖下巴', description: '精致尖俏的下巴' },
+  square: { name: '方下巴', description: '方正刚毅的方下巴' },
+};
+
+// 角色风格选项
+export const CHARACTER_STYLES: CharacterStyle[] = ['warrior', 'mage', 'rogue', 'mage', 'rogue', 'knight', 'archer'];
+
+// 角色风格配置
+export const CHARACTER_STYLE_CONFIGS = {
+  warrior: { name: '战士', icon: '⚔️', description: '勇敢的近战战士' },
+  mage: { name: '法师', icon: '🔮', description: '强大的魔法使用者' },
+  rogue: { name: '盗贼', icon: '🗡️', description: '敏捷的暗影刺客' },
+  knight: { name: '骑士', icon: '🛡️', description: '正义的圣骑士' },
+  archer: { name: '弓箭手', icon: '🏹', description: '精准的远程射手' },
+};
+
+// 战斗口号模板
+export const BATTLE_CRY_TEMPLATES = [
+  '为了正义！',
+  '勇者无敌！',
+  '决不放弃！',
+  '胜利属于我们！',
+  '冲啊！',
+  '让我们战斗！',
+  '永不言败！',
+  '为了荣耀！',
+];
+
+// 默认角色外观
+export const DEFAULT_CHARACTER_APPEARANCE: CharacterAppearance = {
+  gender: 'male',
+  artStyle: 'ink',
+  skinTone: '#FDEBD0',
+  hairColor: '#1A1A1A',
+  hairStyle: 'short_neat',
+  eyeColor: '#4A3728',
+  eyebrowStyle: 'natural',
+  noseStyle: 'medium',
+  lipStyle: 'natural',
+  jawStyle: 'soft',
+  outfitStyle: 'warrior',
+  battleCry: '为了正义！',
+};
+
