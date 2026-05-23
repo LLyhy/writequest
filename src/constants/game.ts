@@ -1,4 +1,4 @@
-import type { ClassConfig, LevelConfig, Skill, Boss, Achievement, MapRegion, StoryChapter, ThemeSkin, FontEffect, Badge, InspirationFragment, WritingMaterial, AdventureStory, Equipment, LootBoxPrize, CharacterAppearance, CharacterColor, CharacterStyle } from '../types';
+import type { ClassConfig, LevelConfig, Skill, Boss, Achievement, MapRegion, StoryChapter, ThemeSkin, FontEffect, Badge, InspirationFragment, WritingMaterial, AdventureStory, Equipment, LootBoxPrize, CharacterAppearance, CharacterStyle, CharacterGender, ArtStyle, SkinTone, HairColor } from '../types';
 
 // 职业配置
 export const CLASS_CONFIGS: ClassConfig[] = [

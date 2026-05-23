@@ -7,6 +7,7 @@ interface StatCardProps {
   value: string | number;
   subValue?: string;
   color?: 'primary' | 'secondary' | 'accent' | 'danger';
+  showSuffix?: boolean;
 }
 
 const colorStyles = {

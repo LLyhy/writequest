@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PixelPanel } from '../ui/PixelPanel';
 import { PixelButton } from '../ui/PixelButton';
 import { ScrollText, PenTool, Target, Zap, CheckCircle2 } from 'lucide-react';
 

@@ -483,6 +483,9 @@ export type JawStyle = 'soft' | 'defined' | 'sharp' | 'square';
 // 角色风格
 export type CharacterStyle = 'warrior' | 'mage' | 'rogue' | 'knight' | 'archer';
 
+// 角色颜色配置（兼容旧代码）
+export type CharacterColor = string;
+
 // 艺术风格
 export type ArtStyle = 'ink' | 'oil' | 'watercolor' | 'minimalist';
 
