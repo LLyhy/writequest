@@ -9,6 +9,8 @@ import { PixelButton } from '../ui/PixelButton';
 import { Play, Square, Trash2, FileText, Clock, Sparkles, Upload, Save, FolderOpen } from 'lucide-react';
 import { PublishModal } from '../showcase/PublishModal';
 import { DraftBox } from '../showcase/DraftBox';
+import { DocumentManager } from './DocumentManager';
+import { MentorChat, MentorButton } from '../mentor';
 import type { DraftWork } from '../../types/showcase';
 
 interface WritingEditorProps {
@@ -25,6 +27,8 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [showDraftBox, setShowDraftBox] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showDocumentManager, setShowDocumentManager] = useState(false);
+  const [showMentorChat, setShowMentorChat] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const {
@@ -343,6 +347,21 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             </PixelButton>
 
             <PixelButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowDocumentManager(true)}
+              disabled={!character}
+              title="文档管理"
+            >
+              <span className="flex items-center gap-1">
+                <FileText size={14} />
+                文档
+              </span>
+            </PixelButton>
+
+            {character && <MentorButton />}
+
+            <PixelButton
               variant="primary"
               size="sm"
               onClick={handlePublish}
@@ -498,6 +517,15 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
         onEditDraft={handleEditDraft}
         onDeleteDraft={deleteDraft}
       />
+
+      {/* 文档管理器 */}
+      <DocumentManager
+        isOpen={showDocumentManager}
+        onClose={() => setShowDocumentManager(false)}
+      />
+
+      {/* AI 老爷爷助手 */}
+      <MentorChat />
     </PixelPanel>
   );
 };

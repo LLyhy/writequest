@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useCharacterStore, useGameStore } from '../../stores';
+import { useCharacterStore, useGameStore, useTutorialStore } from '../../stores';
 import { XPBar } from '../ui/XPBar';
 import { CoinDisplay } from '../ui/CoinDisplay';
 import { LevelBadge } from '../ui/LevelBadge';
-import { PenTool, Settings, LogOut, Home, Users, User, Sparkles } from 'lucide-react';
+import { PenTool, Settings, LogOut, Home, Users, User, Sparkles, Database, HelpCircle } from 'lucide-react';
 import { PixelButton } from '../ui/PixelButton';
+import { DataExportModal, DataImportModal } from '../data';
+import { TutorialModal } from '../tutorial';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -25,6 +27,16 @@ export const Header: React.FC<HeaderProps> = ({
   const character = useCharacterStore((state) => state.character);
   const resetCharacter = useCharacterStore((state) => state.resetCharacter);
   const coins = useGameStore((state) => state.coins);
+  const { completed: tutorialCompleted, reset: resetTutorial } = useTutorialStore();
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
+
+  useEffect(() => {
+    if (character && !tutorialCompleted) {
+      setShowTutorial(true);
+    }
+  }, [character, tutorialCompleted]);
 
   const handleReset = () => {
     if (confirm('确定要重置所有数据吗？这将删除你的角色和所有进度。')) {
@@ -123,6 +135,37 @@ export const Header: React.FC<HeaderProps> = ({
             <CoinDisplay amount={coins} size="md" />
 
             <div className="flex items-center gap-2 ml-4">
+              {character && (
+                <>
+                  <PixelButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowTutorial(true)}
+                    className="p-2"
+                    title="新手引导"
+                  >
+                    <HelpCircle size={16} />
+                  </PixelButton>
+                  <PixelButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowExportModal(true)}
+                    className="p-2"
+                    title="导出数据"
+                  >
+                    <Database size={16} />
+                  </PixelButton>
+                  <PixelButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setShowImportModal(true)}
+                    className="p-2"
+                    title="导入数据"
+                  >
+                    <Database size={16} />
+                  </PixelButton>
+                </>
+              )}
               <PixelButton
                 variant="secondary"
                 size="sm"
@@ -153,6 +196,11 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         )}
       </div>
+
+      {/* 数据管理模态框 */}
+      <DataExportModal isOpen={showExportModal} onClose={() => setShowExportModal(false)} />
+      <DataImportModal isOpen={showImportModal} onClose={() => setShowImportModal(false)} />
+      <TutorialModal isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
     </header>
   );
 };

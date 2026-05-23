@@ -15,3 +15,21 @@ export { useAdventureStore } from './adventureStore';
 
 // 新英雄系统
 export { useHeroStore } from './heroStore';
+
+// 作品展示和用户资料
+export { useShowcaseStore } from './showcaseStore';
+export { useUserProfileStore } from './userProfileStore';
+
+// 数据导出导入
+export { useDataExportStore } from './useDataExportStore';
+
+export { useTutorialStore } from './useTutorialStore';
+
+// AI 老爷爷助手
+export { useMentorStore } from './useMentorStore';
+
+// 宠物系统
+export { usePetStore, type Pet, type PetType } from './usePetStore';
+
+// 排行榜
+export { useLeaderboardStore, type LeaderboardEntry, type LeaderboardType } from './useLeaderboardStore';

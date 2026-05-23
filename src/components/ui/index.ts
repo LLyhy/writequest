@@ -7,3 +7,4 @@ export { CoinDisplay } from './CoinDisplay';
 export { StatCard } from './StatCard';
 export { QuestCard } from './QuestCard';
 export { QuestCompleteAnimation } from './QuestCompleteAnimation';
+export { SidebarDrawer } from './SidebarDrawer';
