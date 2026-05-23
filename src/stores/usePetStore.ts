@@ -131,7 +131,6 @@ interface PetStore {
   activePetId: string | null;
   petExpGained: number;
   
-  // Actions
   getEquippedPet: () => Pet | null;
   equipPet: (petId: string) => void;
   addPetExp: (amount: number) => void;
@@ -162,11 +161,11 @@ export const usePetStore = create<PetStore>()(
       equipPet: (petId: string) => {
         set(state => ({
           pets: state.pets.map(p => ({
-          ...p,
-          equipped: p.id === petId,
-        })),
-        activePetId: petId,
-      })),
+            ...p,
+            equipped: p.id === petId,
+          })),
+          activePetId: petId,
+        }));
       },
 
       addPetExp: (amount: number) => {
@@ -198,14 +197,14 @@ export const usePetStore = create<PetStore>()(
             pets: updatedPets,
             petExpGained: state.petExpGained + amount,
           };
-        }));
+        });
       },
 
       interactWithPet: (petId: string, type: 'play' | 'feed') => {
         set(state => ({
           pets: state.pets.map(pet => {
             if (pet.id === petId) {
-              let happinessChange = type === 'play' ? 10 : 20;
+              const happinessChange = type === 'play' ? 10 : 20;
               return {
                 ...pet,
                 happiness: Math.min(100, pet.happiness + happinessChange),
@@ -242,7 +241,7 @@ export const usePetStore = create<PetStore>()(
           return {
             pets: [...state.pets, createDefaultPet(type, true)],
           };
-        }));
+        });
       },
 
       checkPetUnlocks: (level: number, streak: number) => {
