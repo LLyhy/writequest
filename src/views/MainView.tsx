@@ -22,7 +22,6 @@ import { SidebarDrawer } from '../components/ui/SidebarDrawer';
 import { MobileBottomNav } from '../components/layout';
 import { PetDisplay, PetPanel } from '../components/pet';
 import { LeaderboardPanel } from '../components/leaderboard';
-import { useMediaQuery } from '../hooks';
 import { Trophy, Zap, Swords, Brain, BarChart3, Map, BookOpen, ShoppingCart, Backpack, Sword, User, Sparkles, Menu, PawPrint } from 'lucide-react';
 import type { Boss } from '../types';
 import { DAILY_QUEST_DRAW_REWARD } from '../constants/game';
@@ -44,7 +43,6 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
   const { checkPetUnlocks, addPetExp } = usePetStore();
   const { addToWeeklyStats } = useLeaderboardStore();
 
-  const isMobile = useMediaQuery('(max-width: 768px)');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('main');
   const [selectedBoss, setSelectedBoss] = useState<Boss | null>(null);
@@ -110,16 +108,12 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
 
   const handleNavigateToMain = () => {
     setViewMode('main');
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
+    setSidebarOpen(false);
   };
 
   const handleNavigateToBoss = () => {
     setViewMode('boss');
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
+    setSidebarOpen(false);
   };
 
   const SidebarContent = () => (
@@ -151,7 +145,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('boss');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -163,7 +157,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('skills');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -175,7 +169,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('achievements');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -187,7 +181,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setShowLeaderboard(true);
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -199,7 +193,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setShowPetPanel(true);
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -211,7 +205,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('stats');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -223,7 +217,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('map');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -235,7 +229,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('story');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -247,7 +241,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('shop');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -259,7 +253,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('collection');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -271,7 +265,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="sm"
           onClick={() => {
             setViewMode('character');
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-1"
         >
@@ -285,7 +279,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="md"
           onClick={() => {
             onNavigateToShowcase();
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-2"
         >
@@ -297,7 +291,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
           size="md"
           onClick={() => {
             onNavigateToProfile();
-            if (isMobile) setSidebarOpen(false);
+            setSidebarOpen(false);
           }}
           className="flex items-center justify-center gap-2"
         >
@@ -310,7 +304,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
         size="md"
         onClick={() => {
           setViewMode('adventure');
-          if (isMobile) setSidebarOpen(false);
+          setSidebarOpen(false);
         }}
         className="w-full flex items-center justify-center gap-2"
       >
@@ -417,22 +411,20 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
   );
 
   return (
-    <div className="flex flex-col">
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 pb-24 md:pb-4">
-        {/* 移动端菜单按钮 */}
-        {isMobile && (
-          <div className="mb-4">
-            <PixelButton
-              variant="secondary"
-              size="md"
-              onClick={() => setSidebarOpen(true)}
-              className="flex items-center gap-2"
-            >
-              <Menu size={16} />
-              <span>菜单</span>
-            </PixelButton>
-          </div>
-        )}
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-1 max-w-7xl mx-auto w-full p-3 sm:p-4 pb-24 md:pb-4">
+        {/* 移动端菜单按钮 - 仅移动端显示 */}
+        <div className="md:hidden mb-4">
+          <PixelButton
+            variant="secondary"
+            size="md"
+            onClick={() => setSidebarOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Menu size={16} />
+            <span>菜单</span>
+          </PixelButton>
+        </div>
 
         <AnimatePresence mode="wait">
           {viewMode === 'adventure' ? (
@@ -462,16 +454,14 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
               exit={{ opacity: 0 }}
               className="w-full"
             >
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* 桌面端侧边栏 */}
-                {!isMobile && (
-                  <div className="lg:col-span-4">
-                    <SidebarContent />
-                  </div>
-                )}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+                {/* 桌面端侧边栏 - 仅大屏幕显示 */}
+                <div className="hidden lg:block lg:col-span-4">
+                  <SidebarContent />
+                </div>
 
-                {/* 主内容区域 */}
-                <div className={isMobile ? 'lg:col-span-12' : 'lg:col-span-8'}>
+                {/* 主内容区域 - 所有屏幕都占满 */}
+                <div className="col-span-1 lg:col-span-8">
                   <AnimatePresence mode="wait">
                     {viewMode === 'bossBattle' && selectedBoss ? (
                       <motion.div
@@ -505,8 +495,8 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
         </AnimatePresence>
       </main>
 
-      {/* 移动端侧边栏抽屉 */}
-      {isMobile && (
+      {/* 移动端侧边栏抽屉 - 仅移动端显示 */}
+      <div className="md:hidden">
         <SidebarDrawer
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -514,18 +504,16 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
         >
           <SidebarContent />
         </SidebarDrawer>
-      )}
+      </div>
 
-      {/* 移动端底部导航 */}
-      {isMobile && (
-        <MobileBottomNav
-          onNavigateToMain={handleNavigateToMain}
-          onNavigateToBoss={handleNavigateToBoss}
-          onNavigateToShowcase={onNavigateToShowcase}
-          onNavigateToProfile={onNavigateToProfile}
-          activeView={viewMode}
-        />
-      )}
+      {/* 移动端底部导航 - 仅移动端显示 */}
+      <MobileBottomNav
+        onNavigateToMain={handleNavigateToMain}
+        onNavigateToBoss={handleNavigateToBoss}
+        onNavigateToShowcase={onNavigateToShowcase}
+        onNavigateToProfile={onNavigateToProfile}
+        activeView={viewMode}
+      />
 
       <QuestCompleteAnimation
         isVisible={showQuestAnimation}
@@ -534,25 +522,23 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
         onComplete={() => setShowQuestAnimation(false)}
       />
 
-      {/* 桌面端页脚 */}
-      {!isMobile && (
-        <footer className="border-t-2 border-pixel-border bg-pixel-panel mt-8">
-          <div className="max-w-7xl mx-auto px-4 py-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <p className="text-xs text-gray-500 font-mono">
-                WriteQuest · 让写作成为一场冒险
-              </p>
-              {character && (
-                <div className="flex items-center gap-4 text-xs text-gray-500 font-mono">
-                  <span>字数: {character.totalWords.toLocaleString()}</span>
-                  <span>时间: {Math.floor(character.totalWritingTime / 60)}小时</span>
-                  <span>连续: {character.streakDays}天</span>
-                </div>
-              )}
-            </div>
+      {/* 桌面端页脚 - 仅大屏幕显示 */}
+      <footer className="hidden md:block border-t-2 border-pixel-border bg-pixel-panel mt-8">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-gray-500 font-mono">
+              WriteQuest · 让写作成为一场冒险
+            </p>
+            {character && (
+              <div className="flex items-center gap-4 text-xs text-gray-500 font-mono">
+                <span>字数: {character.totalWords.toLocaleString()}</span>
+                <span>时间: {Math.floor(character.totalWritingTime / 60)}小时</span>
+                <span>连续: {character.streakDays}天</span>
+              </div>
+            )}
           </div>
-        </footer>
-      )}
+        </div>
+      </footer>
 
       {/* 宠物显示 */}
       <PetDisplay />
