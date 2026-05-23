@@ -35,8 +35,6 @@ interface ShowcaseActions {
   resetShowcase: () => void;
 }
 
-const generateId = () => Math.random().toString(36).substring(2, 9);
-
 export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
   persist(
     (set, get) => ({

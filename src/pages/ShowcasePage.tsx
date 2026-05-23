@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, ArrowLeft, SortAsc, SortDesc, TrendingUp, Users, Flame } from 'lucide-react';
-import { useShowcaseStore, useUserProfileStore } from '../stores';
+import { Search, ArrowLeft, TrendingUp, Users, Flame } from 'lucide-react';
+import { useShowcaseStore } from '../stores';
 import { WorkCard, WorkDetail, Leaderboard } from '../components/showcase';
 import { PixelPanel, PixelButton, PixelInput } from '../components/ui';
-import type { PublishedWork, WorkSortType, LeaderboardType } from '../types/showcase';
+import type { PublishedWork, WorkSortType } from '../types/showcase';
 
 type SidebarTab = 'all' | 'trending' | 'leaderboard';
 
@@ -12,7 +12,6 @@ export function ShowcasePage({ onBack }: { onBack: () => void }) {
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWork, setSelectedWork] = useState<PublishedWork | null>(null);
-  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>('works');
   const {
     publishedWorks,
     currentSort,
@@ -23,7 +22,6 @@ export function ShowcasePage({ onBack }: { onBack: () => void }) {
     selectWork,
     incrementViews,
   } = useShowcaseStore();
-  const { currentUser } = useUserProfileStore();
 
   const works = getSortedWorks();
 
@@ -170,25 +168,7 @@ export function ShowcasePage({ onBack }: { onBack: () => void }) {
 
               {sidebarTab === 'leaderboard' && (
                 <div className="space-y-4">
-                  <div className="flex gap-2">
-                    {[
-                      { id: 'works' as LeaderboardType, label: '作品榜' },
-                      { id: 'authors' as LeaderboardType, label: '作者榜' },
-                    ].map((type) => (
-                      <button
-                        key={type.id}
-                        onClick={() => setLeaderboardType(type.id)}
-                        className={`flex-1 py-2 text-xs font-pixel rounded transition-colors ${
-                          leaderboardType === type.id
-                            ? 'bg-pixel-primary text-white'
-                            : 'text-gray-400 hover:bg-pixel-border/20'
-                        }`}
-                      >
-                        {type.label}
-                      </button>
-                    ))}
-                  </div>
-                  <Leaderboard type={leaderboardType} />
+                  <Leaderboard topWorks={[]} topAuthors={[]} />
                 </div>
               )}
             </PixelPanel>

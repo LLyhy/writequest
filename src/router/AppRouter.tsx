@@ -1,6 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { LandingPage } from '../pages/LandingPage';
-import { AppPage } from '../pages/AppPage';
+import LandingPage from '../pages/LandingPage';
+import AppPage from '../pages/AppPage';
 import { MainView } from '../views/MainView';
 import { BossBattleView } from '../views/BossBattleView';
 import { AdventureView } from '../views/AdventureView';

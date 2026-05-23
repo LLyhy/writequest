@@ -93,7 +93,7 @@ export const useLeaderboardStore = create<LeaderboardStore>()(
         const entries = {
           wordsWritten: [
             { id: 'player', name: '你', value: weeklyData.personalBest.wordsWritten, rank: 0 },
-            ...MOCK_PLAYERS.map((p, i) => ({
+            ...MOCK_PLAYERS.map((p) => ({
               ...p,
               value: Math.floor(Math.random() * 10000) + 1000,
               rank: 0,
@@ -102,7 +102,7 @@ export const useLeaderboardStore = create<LeaderboardStore>()(
           
           daysStreak: [
             { id: 'player', name: '你', value: weeklyData.personalBest.daysStreak, rank: 0 },
-            ...MOCK_PLAYERS.map((p, i) => ({
+            ...MOCK_PLAYERS.map((p) => ({
               ...p,
               value: Math.floor(Math.random() * 30) + 1,
               rank: 0,
@@ -111,7 +111,7 @@ export const useLeaderboardStore = create<LeaderboardStore>()(
           
           monstersDefeated: [
             { id: 'player', name: '你', value: weeklyData.personalBest.monstersDefeated, rank: 0 },
-            ...MOCK_PLAYERS.map((p, i) => ({
+            ...MOCK_PLAYERS.map((p) => ({
               ...p,
               value: Math.floor(Math.random() * 50) + 5,
               rank: 0,
