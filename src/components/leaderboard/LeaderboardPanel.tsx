@@ -55,7 +55,7 @@ const LeaderboardRow: React.FC<{ entry: LeaderboardEntry; unit: string; isPlayer
       </div>
       
       <div className="flex-1">
-        <div className={`font-mono text-sm">
+        <div className="font-mono text-sm">
           {entry.name}
         </div>
       </div>
@@ -145,7 +145,7 @@ export const LeaderboardPanel: React.FC<LeaderboardPanelProps> = ({
                       </div>
                     </button>
                   );
-                })}
+                }))}
               </div>
 
               <div className="flex-1 overflow-y-auto space-y-2">
