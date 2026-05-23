@@ -274,8 +274,8 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
 
       <div className="flex flex-col h-full">
         {/* 工具栏 */}
-        <div className="flex items-center justify-between mb-4 pb-4 border-b-2 border-pixel-border">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 pb-4 border-b-2 border-pixel-border gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             {/* 字数统计 */}
             <div className="flex items-center gap-2 text-sm">
               <FileText size={16} className="text-pixel-secondary" />
@@ -310,9 +310,9 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {isWriting && (
-              <div className="flex items-center gap-2 mr-4">
+              <div className="flex items-center gap-2 mr-2">
                 <Clock size={16} className="text-pixel-accent animate-pulse" />
                 <span className="font-pixel text-pixel-accent">
                   {formatTime(elapsedTime)}
@@ -329,7 +329,7 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             >
               <span className="flex items-center gap-1">
                 <Save size={14} />
-                保存草稿
+                <span className="hidden sm:inline">保存</span>
               </span>
             </PixelButton>
 
@@ -341,7 +341,7 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             >
               <span className="flex items-center gap-1">
                 <FolderOpen size={14} />
-                草稿箱
+                <span className="hidden sm:inline">草稿箱</span>
               </span>
             </PixelButton>
 
@@ -354,7 +354,7 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             >
               <span className="flex items-center gap-1">
                 <FileText size={14} />
-                文档
+                <span className="hidden sm:inline">文档</span>
               </span>
             </PixelButton>
 
@@ -368,7 +368,7 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
             >
               <span className="flex items-center gap-1">
                 <Upload size={14} />
-                发布
+                <span className="hidden sm:inline">发布</span>
               </span>
             </PixelButton>
 
@@ -379,9 +379,9 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
                 onClick={handleStartWriting}
                 disabled={!character}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
                   <Play size={16} />
-                  开始写作
+                  <span className="hidden sm:inline">开始</span>
                 </span>
               </PixelButton>
             ) : (
@@ -390,9 +390,9 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
                 size="sm"
                 onClick={handleEndWriting}
               >
-                <span className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
                   <Square size={16} />
-                  结束写作
+                  <span className="hidden sm:inline">结束</span>
                 </span>
               </PixelButton>
             )}
