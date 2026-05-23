@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePetStore } from '../../stores';
 import { PetAvatar } from './PetAvatar';
-import { Sparkles, Heart, Gift } from 'lucide-react';
+import { Sparkles, Heart } from 'lucide-react';
 
 interface PetDisplayProps {
   className?: string;

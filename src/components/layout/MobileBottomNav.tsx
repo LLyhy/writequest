@@ -1,5 +1,4 @@
-import React from 'react';
-import { Home, PenTool, Zap, Sparkles, User } from 'lucide-react';
+import { Home, Zap, Sparkles, User } from 'lucide-react';
 import { PixelButton } from '../ui/PixelButton';
 
 interface MobileBottomNavProps {

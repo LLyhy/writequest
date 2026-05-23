@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Zap, Star, PlayCircle, Coffee, ChevronRight, ChevronLeft } from 'lucide-react';
+import { X, Heart, Zap, Star, PlayCircle, Coffee } from 'lucide-react';
 import { usePetStore, type Pet } from '../../stores';
 import { PetAvatar } from './PetAvatar';
 import { PixelButton } from '../ui/PixelButton';

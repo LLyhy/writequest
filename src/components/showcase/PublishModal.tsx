@@ -8,7 +8,6 @@ import {
   Eye,
   EyeOff,
   Hash,
-  FileText,
   Type,
 } from 'lucide-react';
 import { PixelPanel, PixelButton, PixelInput } from '../ui';
@@ -53,7 +52,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const { publishWork, createDraft, updateDraft } = useShowcaseStore();
+  const { publishWork, createDraft } = useShowcaseStore();
   const { currentUser, addToTotalWorks, addToTotalWords } = useUserProfileStore();
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length || initialWordCount;

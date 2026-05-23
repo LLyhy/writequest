@@ -8,11 +8,7 @@ import { PixelButton } from '../ui/PixelButton';
 import { PixelPanel } from '../ui/PixelPanel';
 import { useGameStore } from '../../stores';
 
-interface MentorChatProps {
-  className?: string;
-}
-
-export const MentorChat: React.FC<MentorChatProps> = ({ className = '' }) => {
+export const MentorChat: React.FC = () => {
   const {
     messages,
     freeCallsLeft,
@@ -22,7 +18,7 @@ export const MentorChat: React.FC<MentorChatProps> = ({ className = '' }) => {
     isOpen,
     setIsOpen,
   } = useMentorStore();
-  const { coins, addCoins, spendCoins } = useGameStore();
+  const { coins, spendCoins } = useGameStore();
   
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
