@@ -50,79 +50,79 @@ export function DataImportModal({ isOpen, onClose }: DataImportModalProps) {
   if (!isOpen) return null;
 
   return (
-    &lt;div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"&gt;
-      &lt;PixelPanel className="max-w-md w-full"&gt;
-        &lt;div className="flex items-center justify-between mb-4"&gt;
-          &lt;h2 className="text-xl font-pixel text-white"&gt;导入数据&lt;/h2&gt;
-          &lt;PixelButton variant="secondary" size="sm" onClick={handleClose}&gt;
-            &lt;X size={16} /&gt;
-          &lt;/PixelButton&gt;
-        &lt;/div&gt;
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <PixelPanel className="max-w-md w-full">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-pixel text-white">导入数据</h2>
+          <PixelButton variant="secondary" size="sm" onClick={handleClose}>
+            <X size={16} />
+          </PixelButton>
+        </div>
 
-        {status === 'idle' &amp;&amp; (
-          &lt;&gt;
-            &lt;p className="text-gray-300 text-sm mb-4"&gt;
+        {status === 'idle' && (
+          <>
+            <p className="text-gray-300 text-sm mb-4">
               选择要导入的备份文件（.json）
-            &lt;/p&gt;
-            &lt;div className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center mb-4"&gt;
-              &lt;input
+            </p>
+            <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center mb-4">
+              <input
                 ref={fileInputRef}
                 type="file"
                 accept=".json"
                 onChange={handleFileSelect}
                 className="hidden"
-              /&gt;
-              &lt;Upload size={48} className="mx-auto text-gray-400 mb-4" /&gt;
-              &lt;PixelButton
+              />
+              <Upload size={48} className="mx-auto text-gray-400 mb-4" />
+              <PixelButton
                 variant="primary"
-                onClick={() =&gt; fileInputRef.current?.click()}
-              &gt;
+                onClick={() => fileInputRef.current?.click()}
+              >
                 选择文件
-              &lt;/PixelButton&gt;
-            &lt;/div&gt;
-            &lt;p className="text-yellow-400 text-xs"&gt;
+              </PixelButton>
+            </div>
+            <p className="text-yellow-400 text-xs">
               ⚠️ 警告：导入将覆盖现有数据
-            &lt;/p&gt;
-          &lt;/&gt;
+            </p>
+          </>
         )}
 
-        {status === 'importing' &amp;&amp; (
-          &lt;div className="text-center py-8"&gt;
-            &lt;div className="animate-spin w-8 h-8 border-2 border-pixel-primary border-t-transparent rounded-full mx-auto mb-4"&gt;&lt;/div&gt;
-            &lt;p className="text-white"&gt;正在导入...&lt;/p&gt;
-          &lt;/div&gt;
+        {status === 'importing' && (
+          <div className="text-center py-8">
+            <div className="animate-spin w-8 h-8 border-2 border-pixel-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-white">正在导入...</p>
+          </div>
         )}
 
-        {status === 'success' &amp;&amp; (
-          &lt;div className="text-center py-8"&gt;
-            &lt;CheckCircle2 size={48} className="mx-auto text-green-400 mb-4" /&gt;
-            &lt;p className="text-white mb-4"&gt;导入成功！&lt;/p&gt;
-            &lt;PixelButton variant="primary" onClick={handleClose}&gt;
+        {status === 'success' && (
+          <div className="text-center py-8">
+            <CheckCircle2 size={48} className="mx-auto text-green-400 mb-4" />
+            <p className="text-white mb-4">导入成功！</p>
+            <PixelButton variant="primary" onClick={handleClose}>
               关闭
-            &lt;/PixelButton&gt;
-          &lt;/div&gt;
+            </PixelButton>
+          </div>
         )}
 
-        {status === 'error' &amp;&amp; (
-          &lt;div className="text-center py-8"&gt;
-            &lt;AlertCircle size={48} className="mx-auto text-red-400 mb-4" /&gt;
-            &lt;p className="text-red-400 mb-2"&gt;导入失败&lt;/p&gt;
-            &lt;p className="text-gray-400 text-sm mb-4"&gt;{error}&lt;/p&gt;
-            &lt;div className="flex gap-3"&gt;
-              &lt;PixelButton variant="secondary" onClick={handleClose} className="flex-1"&gt;
+        {status === 'error' && (
+          <div className="text-center py-8">
+            <AlertCircle size={48} className="mx-auto text-red-400 mb-4" />
+            <p className="text-red-400 mb-2">导入失败</p>
+            <p className="text-gray-400 text-sm mb-4">{error}</p>
+            <div className="flex gap-3">
+              <PixelButton variant="secondary" onClick={handleClose} className="flex-1">
                 关闭
-              &lt;/PixelButton&gt;
-              &lt;PixelButton
+              </PixelButton>
+              <PixelButton
                 variant="primary"
-                onClick={() =&gt; setStatus('idle')}
+                onClick={() => setStatus('idle')}
                 className="flex-1"
-              &gt;
+              >
                 重试
-              &lt;/PixelButton&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
+              </PixelButton>
+            </div>
+          </div>
         )}
-      &lt;/PixelPanel&gt;
-    &lt;/div&gt;
+      </PixelPanel>
+    </div>
   );
 }

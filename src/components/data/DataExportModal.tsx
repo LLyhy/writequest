@@ -36,53 +36,53 @@ export function DataExportModal({ isOpen, onClose }: DataExportModalProps) {
   if (!isOpen) return null;
 
   return (
-    &lt;div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"&gt;
-      &lt;PixelPanel className="max-w-md w-full max-h-[80vh] overflow-y-auto"&gt;
-        &lt;div className="flex items-center justify-between mb-4"&gt;
-          &lt;h2 className="text-xl font-pixel text-white"&gt;导出数据&lt;/h2&gt;
-          &lt;PixelButton variant="secondary" size="sm" onClick={handleClose}&gt;
-            &lt;X size={16} /&gt;
-          &lt;/PixelButton&gt;
-        &lt;/div&gt;
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <PixelPanel className="max-w-md w-full max-h-[80vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-pixel text-white">导出数据</h2>
+          <PixelButton variant="secondary" size="sm" onClick={handleClose}>
+            <X size={16} />
+          </PixelButton>
+        </div>
 
         {exported ? (
-          &lt;div className="text-center py-8"&gt;
-            &lt;CheckCircle2 size={48} className="mx-auto text-green-400 mb-4" /&gt;
-            &lt;p className="text-white mb-4"&gt;导出成功！&lt;/p&gt;
-            &lt;PixelButton variant="primary" onClick={handleClose}&gt;
+          <div className="text-center py-8">
+            <CheckCircle2 size={48} className="mx-auto text-green-400 mb-4" />
+            <p className="text-white mb-4">导出成功！</p>
+            <PixelButton variant="primary" onClick={handleClose}>
               关闭
-            &lt;/PixelButton&gt;
-          &lt;/div&gt;
+            </PixelButton>
+          </div>
         ) : (
-          &lt;&gt;
-            &lt;div className="space-y-3 mb-6"&gt;
-              &lt;p className="text-gray-300 text-sm"&gt;选择要导出的数据：&lt;/p&gt;
-              {Object.entries(exportOptions).map(([key, value]) =&gt; (
-                &lt;label key={key} className="flex items-center gap-3 cursor-pointer"&gt;
-                  &lt;input
+          <>
+            <div className="space-y-3 mb-6">
+              <p className="text-gray-300 text-sm">选择要导出的数据：</p>
+              {Object.entries(exportOptions).map(([key, value]) => (
+                <label key={key} className="flex items-center gap-3 cursor-pointer">
+                  <input
                     type="checkbox"
                     checked={value}
-                    onChange={(e) =&gt; setExportOption(key as any, e.target.checked)}
+                    onChange={(e) => setExportOption(key as any, e.target.checked)}
                     className="w-4 h-4"
-                  /&gt;
-                  &lt;span className="text-gray-200 text-sm"&gt;
+                  />
+                  <span className="text-gray-200 text-sm">
                     {key.replace('include', '')}
-                  &lt;/span&gt;
-                &lt;/label&gt;
+                  </span>
+                </label>
               ))}
-            &lt;/div&gt;
-            &lt;div className="flex gap-3"&gt;
-              &lt;PixelButton variant="secondary" onClick={handleClose} className="flex-1"&gt;
+            </div>
+            <div className="flex gap-3">
+              <PixelButton variant="secondary" onClick={handleClose} className="flex-1">
                 取消
-              &lt;/PixelButton&gt;
-              &lt;PixelButton variant="primary" onClick={handleExport} className="flex-1"&gt;
-                &lt;Download size={16} className="mr-2" /&gt;
+              </PixelButton>
+              <PixelButton variant="primary" onClick={handleExport} className="flex-1">
+                <Download size={16} className="mr-2" />
                 导出
-              &lt;/PixelButton&gt;
-            &lt;/div&gt;
-          &lt;/&gt;
+              </PixelButton>
+            </div>
+          </>
         )}
-      &lt;/PixelPanel&gt;
-    &lt;/div&gt;
+      </PixelPanel>
+    </div>
   );
 }
