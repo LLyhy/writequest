@@ -418,7 +418,7 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
 
   return (
     <div className="flex flex-col">
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 pb-20 md:pb-4">
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 pb-24 md:pb-4">
         {/* 移动端菜单按钮 */}
         {isMobile && (
           <div className="mb-4">
