@@ -9,10 +9,13 @@ import {
   EyeOff,
   Hash,
   Type,
+  LogIn,
 } from 'lucide-react';
 import { PixelPanel, PixelButton, PixelInput } from '../ui';
 import { useShowcaseStore } from '../../stores/showcaseStore';
 import { useUserProfileStore } from '../../stores/userProfileStore';
+import { AuthModal } from '../auth/AuthModal';
+import { supabaseService } from '../../services/supabaseService';
 
 const PRESET_TAGS = [
   '奇幻',
@@ -51,9 +54,19 @@ export const PublishModal: React.FC<PublishModalProps> = ({
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isSupabaseLoggedIn, setIsSupabaseLoggedIn] = useState(false);
 
-  const { publishWork, createDraft } = useShowcaseStore();
+  const { publishWork, createDraft, fetchPublishedWorks } = useShowcaseStore();
   const { currentUser, addToTotalWorks, addToTotalWords } = useUserProfileStore();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const user = await supabaseService.auth.getCurrentUser();
+      setIsSupabaseLoggedIn(!!user);
+    };
+    checkAuth();
+  }, []);
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length || initialWordCount;
 
@@ -105,6 +118,12 @@ export const PublishModal: React.FC<PublishModalProps> = ({
 
   const handlePublish = async () => {
     if (!currentUser || !title.trim() || !content.trim()) return;
+    
+    if (!isSupabaseLoggedIn) {
+      setShowAuthModal(true);
+      return;
+    }
+    
     setIsPublishing(true);
 
     const work = {
@@ -302,6 +321,15 @@ export const PublishModal: React.FC<PublishModalProps> = ({
           </PixelPanel>
         </motion.div>
       </motion.div>
+      
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={() => {
+          setShowAuthModal(false);
+          setIsSupabaseLoggedIn(true);
+        }}
+      />
     </AnimatePresence>
   );
 };
