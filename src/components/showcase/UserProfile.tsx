@@ -93,7 +93,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
 
             <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
               <Calendar size={14} />
-              <span>加入于 {formatDate(profile.joinedAt)}</span>
+              <span>加入于 {formatDate(profile.joinedAt || profile.createdAt || Date.now())}</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

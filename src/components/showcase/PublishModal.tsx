@@ -134,8 +134,8 @@ export const PublishModal: React.FC<PublishModalProps> = ({
       isPublished: isPublic,
       tags,
       authorId: currentUser.id,
-      authorName: currentUser.characterName,
-      authorDisplayName: currentUser.displayName,
+      authorName: currentUser.characterName || '匿名用户',
+      authorDisplayName: currentUser.displayName || '匿名用户',
       likes: 0,
       likedBy: [],
       comments: [],
@@ -144,7 +144,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
       views: 0,
     };
 
-    publishWork(work);
+    publishWork(work as any);
     addToTotalWorks(1);
     addToTotalWords(wordCount);
 
