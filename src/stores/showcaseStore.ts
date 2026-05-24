@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { PublishedWork, DraftWork, WorkSortType, Comment } from '../types/showcase';
 import { supabaseService } from '../services/supabaseService';
-import type { Work, Profile, Comment as SupabaseComment } from '../lib/supabase';
+import type { Work, Profile } from '../lib/supabase';
 
 interface ShowcaseState {
   publishedWorks: PublishedWork[];
@@ -40,7 +40,7 @@ interface ShowcaseActions {
 }
 
 // Helper function to convert Supabase Work to PublishedWork
-const convertToPublishedWork = (work: Work & { profiles?: Profile | null }, comments: SupabaseComment[] = []): PublishedWork => {
+const convertToPublishedWork = (work: Work & { profiles?: Profile | null }): PublishedWork => {
   const profile = work.profiles;
   return {
     id: work.id,
@@ -57,18 +57,11 @@ const convertToPublishedWork = (work: Work & { profiles?: Profile | null }, comm
     likedBy: [],
     favorites: 0,
     favoritedBy: [],
-    comments: comments.map(comment => ({
-      id: comment.id,
-      userId: comment.user_id,
-      userName: (comment as any).profiles?.display_name || (comment as any).profiles?.username || '匿名',
-      userAvatar: (comment as any).profiles?.avatar_url || '',
-      content: comment.content,
-      createdAt: new Date(comment.created_at).getTime(),
-      parentId: comment.parent_id,
-    })),
+    comments: [],
     views: 0, // We'll fetch this separately or use the RPC
     createdAt: new Date(work.created_at).getTime(),
     updatedAt: new Date(work.updated_at).getTime(),
+    isPublic: work.is_published,
     isPublished: work.is_published,
   };
 };
@@ -94,14 +87,10 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
           if (works) {
             const convertedWorks = works.map(work => convertToPublishedWork(work as any));
             
-            // Fetch like counts and comment counts for each work
+            // Fetch like counts for each work
             for (const work of convertedWorks) {
-              const [likeResult, commentResult] = await Promise.all([
-                supabaseService.like.getLikeCount(work.id),
-                supabaseService.comment.getCommentCount(work.id),
-              ]);
+              const likeResult = await supabaseService.like.getLikeCount(work.id);
               work.likes = likeResult.count || 0;
-              work.comments = []; // We'll fetch comments when user clicks on work
             }
             
             set({ publishedWorks: convertedWorks });
@@ -117,10 +106,10 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
       publishWork: async (workData) => {
         set({ isLoading: true, error: null });
         try {
-          const { data: user } = await supabaseService.auth.getCurrentUser();
+          const user = await supabaseService.auth.getCurrentUser();
           if (!user) throw new Error('请先登录');
 
-          const { data, error } = await supabaseService.work.createWork({
+          const { error } = await supabaseService.work.createWork({
             user_id: user.id,
             title: workData.title,
             content: workData.content,

@@ -3,6 +3,7 @@ export interface PublishedWork {
   authorId: string;
   authorName: string;
   authorDisplayName?: string;
+  authorAvatar?: string;
   title: string;
   description: string;
   content: string;
@@ -10,6 +11,7 @@ export interface PublishedWork {
   createdAt: number;
   updatedAt: number;
   isPublic: boolean;
+  isPublished: boolean;
   tags: string[];
   likes: number;
   likedBy: string[];
@@ -17,14 +19,17 @@ export interface PublishedWork {
   favorites: number;
   favoritedBy: string[];
   views: number;
+  coverImage?: string;
 }
 
 export interface Comment {
   id: string;
-  authorId: string;
-  authorName: string;
+  userId: string;
+  userName: string;
+  userAvatar?: string;
   content: string;
   createdAt: number;
+  parentId?: string | null;
 }
 
 export interface UserProfile {

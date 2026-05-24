@@ -54,9 +54,9 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
   const handleLike = () => {
     if (!currentUser) return;
     if (isLiked) {
-      unlikeWork(work.id, currentUser.id);
+      unlikeWork(work.id);
     } else {
-      likeWork(work.id, currentUser.id);
+      likeWork(work.id);
     }
   };
 
@@ -73,15 +73,7 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
     if (!currentUser || !commentInput.trim()) return;
     setIsSubmitting(true);
 
-    const newComment = {
-      id: Math.random().toString(36).substring(2, 9),
-      authorId: currentUser.id,
-      authorName: currentUser.displayName || currentUser.characterName,
-      content: commentInput.trim(),
-      createdAt: Date.now(),
-    };
-
-    addComment(work.id, newComment);
+    addComment(work.id, commentInput.trim());
     setCommentInput('');
     setIsSubmitting(false);
   };
@@ -222,7 +214,7 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-pixel text-sm text-pixel-primary">
-                            {comment.authorName}
+                            {comment.userName}
                           </span>
                           <span className="text-xs text-gray-500">
                             {formatDate(comment.createdAt)}

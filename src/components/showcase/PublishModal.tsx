@@ -108,18 +108,16 @@ export const PublishModal: React.FC<PublishModalProps> = ({
     setIsPublishing(true);
 
     const work = {
-      id: Math.random().toString(36).substring(2, 9),
-      authorId: currentUser.id,
-      authorName: currentUser.characterName,
-      authorDisplayName: currentUser.displayName,
       title: title.trim(),
       description: description.trim(),
       content: content.trim(),
       wordCount,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
       isPublic,
+      isPublished: isPublic,
       tags,
+      authorId: currentUser.id,
+      authorName: currentUser.characterName,
+      authorDisplayName: currentUser.displayName,
       likes: 0,
       likedBy: [],
       comments: [],
