@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCharacterStore, useGameStore, useTutorialStore } from '../../stores';
+import { useAuthStore } from '../../stores/authStore';
 import { XPBar } from '../ui/XPBar';
 import { CoinDisplay } from '../ui/CoinDisplay';
 import { LevelBadge } from '../ui/LevelBadge';
-import { PenTool, Settings, LogOut, Home, User, Sparkles, Database, HelpCircle } from 'lucide-react';
+import { PenTool, Settings, LogOut, Home, User, Sparkles, Database, HelpCircle, LogIn } from 'lucide-react';
 import { PixelButton } from '../ui/PixelButton';
 import { DataExportModal, DataImportModal } from '../data';
 import { TutorialModal } from '../tutorial';
@@ -15,6 +16,7 @@ interface HeaderProps {
   onProfileClick?: () => void;
   onBackToMain?: () => void;
   showBackButton?: boolean;
+  onLoginClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,11 +25,13 @@ export const Header: React.FC<HeaderProps> = ({
   onProfileClick,
   onBackToMain,
   showBackButton = false,
+  onLoginClick,
 }) => {
   const character = useCharacterStore((state) => state.character);
   const resetCharacter = useCharacterStore((state) => state.resetCharacter);
   const coins = useGameStore((state) => state.coins);
   const { completed: tutorialCompleted } = useTutorialStore();
+  const { isAuthenticated, profile, logout } = useAuthStore();
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
@@ -126,6 +130,29 @@ export const Header: React.FC<HeaderProps> = ({
             <CoinDisplay amount={coins} size="sm" />
 
             <div className="flex items-center gap-1">
+              {/* 登录/登出按钮 */}
+              {isAuthenticated ? (
+                <PixelButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={logout}
+                  className="p-1.5"
+                  title="登出"
+                >
+                  <LogOut size={14} />
+                </PixelButton>
+              ) : (
+                <PixelButton
+                  variant="primary"
+                  size="sm"
+                  onClick={onLoginClick}
+                  className="flex items-center gap-1"
+                >
+                  <LogIn size={14} />
+                  <span className="hidden sm:inline text-xs">登录</span>
+                </PixelButton>
+              )}
+              
               {character && (
                 <>
                   <PixelButton

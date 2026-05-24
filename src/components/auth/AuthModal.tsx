@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
 import { PixelPanel, PixelButton, PixelInput } from '../ui';
-import { supabaseService } from '../../services/supabaseService';
+import { useAuthStore } from '../../stores/authStore';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
 }
 
 type AuthMode = 'login' | 'signup';
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login, signup } = useAuthStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,16 +26,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setIsLoading(true);
 
     try {
+      let result;
       if (authMode === 'login') {
-        const { error } = await supabaseService.auth.signIn(email, password);
-        if (error) throw error;
+        result = await login(email, password);
       } else {
-        const { error } = await supabaseService.auth.signUp(email, password, username);
-        if (error) throw error;
+        result = await signup(email, password, username);
       }
       
-      onSuccess?.();
-      onClose();
+      if (result.success) {
+        onClose();
+      } else {
+        setError(result.error || '操作失败');
+      }
     } catch (err: any) {
       setError(err.message || '操作失败');
     } finally {

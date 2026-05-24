@@ -16,6 +16,9 @@ export { useAdventureStore } from './adventureStore';
 // 新英雄系统
 export { useHeroStore } from './heroStore';
 
+// 认证系统
+export { useAuthStore } from './authStore';
+
 // 作品展示和用户资料
 export { useShowcaseStore } from './showcaseStore';
 export { useUserProfileStore } from './userProfileStore';
