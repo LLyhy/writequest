@@ -6,10 +6,12 @@ import { useUserProfileStore } from '../../stores/userProfileStore';
 import { calculateWritingExp } from '../../constants/game';
 import { PixelPanel } from '../ui/PixelPanel';
 import { PixelButton } from '../ui/PixelButton';
-import { Play, Square, Trash2, FileText, Clock, Sparkles, Upload, Save, FolderOpen } from 'lucide-react';
+import { Play, Square, Trash2, FileText, Clock, Sparkles, Upload, Save, FolderOpen, BookOpen, Lightbulb } from 'lucide-react';
 import { PublishModal } from '../showcase/PublishModal';
 import { DraftBox } from '../showcase/DraftBox';
 import { DocumentManager } from './DocumentManager';
+import { TemplateSelector } from './TemplateSelector';
+import { PromptGenerator } from './PromptGenerator';
 import { MentorChat, MentorButton } from '../mentor';
 import type { DraftWork } from '../../types/showcase';
 
@@ -28,6 +30,8 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
   const [showDraftBox, setShowDraftBox] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDocumentManager, setShowDocumentManager] = useState(false);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showPromptGenerator, setShowPromptGenerator] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const {
@@ -197,6 +201,15 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
     }
   };
 
+  // 插入模板
+  const handleInsertTemplate = (templateContent: string) => {
+    if (content && !confirm('当前已有内容，插入模板会替换现有内容。确定继续吗？')) {
+      return;
+    }
+    setContent(templateContent);
+    textareaRef.current?.focus();
+  };
+
   // 发布作品
   const handlePublish = () => {
     ensureUserProfile();
@@ -355,6 +368,32 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
               <span className="flex items-center gap-1">
                 <FileText size={14} />
                 <span className="hidden sm:inline">文档</span>
+              </span>
+            </PixelButton>
+
+            <PixelButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowTemplateSelector(true)}
+              disabled={!character}
+              title="写作模板"
+            >
+              <span className="flex items-center gap-1">
+                <BookOpen size={14} />
+                <span className="hidden sm:inline">模板</span>
+              </span>
+            </PixelButton>
+
+            <PixelButton
+              variant="secondary"
+              size="sm"
+              onClick={() => setShowPromptGenerator(true)}
+              disabled={!character}
+              title="灵感生成"
+            >
+              <span className="flex items-center gap-1">
+                <Lightbulb size={14} />
+                <span className="hidden sm:inline">灵感</span>
               </span>
             </PixelButton>
 
@@ -521,6 +560,20 @@ export const WritingEditor: React.FC<WritingEditorProps> = ({
       <DocumentManager
         isOpen={showDocumentManager}
         onClose={() => setShowDocumentManager(false)}
+      />
+
+      {/* 写作模板选择器 */}
+      <TemplateSelector
+        isOpen={showTemplateSelector}
+        onClose={() => setShowTemplateSelector(false)}
+        onSelect={handleInsertTemplate}
+      />
+
+      {/* 灵感生成器 */}
+      <PromptGenerator
+        isOpen={showPromptGenerator}
+        onClose={() => setShowPromptGenerator(false)}
+        onSelect={handleInsertTemplate}
       />
 
       {/* AI 老爷爷助手 */}

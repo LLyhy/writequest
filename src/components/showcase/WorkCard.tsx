@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MessageCircle, Eye, Calendar, User } from 'lucide-react';
+import { MessageCircle, Eye, Calendar, User } from 'lucide-react';
 import { PixelPanel } from '../ui';
+import { LikeButton } from './LikeButton';
 import type { PublishedWork } from '../../types/showcase';
 
 interface WorkCardProps {
@@ -74,10 +75,7 @@ export const WorkCard: React.FC<WorkCardProps> = ({ work, onClick }) => {
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 text-pixel-accent">
-                    <Heart size={14} />
-                    <span>{work.likes}</span>
-                  </div>
+                  <LikeButton workId={work.id} size={14} />
                   <div className="flex items-center gap-1 text-gray-400">
                     <MessageCircle size={14} />
                     <span>{work.comments.length}</span>

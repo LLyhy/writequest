@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, PenTool, Calendar, Users, Heart, BookOpen, Edit } from 'lucide-react';
 import { PixelPanel, StatCard } from '../ui';
 import { WorkCard } from './WorkCard';
+import { FollowButton, FollowList } from '../profile';
 import type { UserProfile as UserProfileType, PublishedWork } from '../../types/showcase';
 
 interface UserProfileProps {
@@ -13,6 +14,10 @@ interface UserProfileProps {
   onUnfollow?: (userId: string) => void;
   onEditProfile?: () => void;
   isFollowing?: boolean;
+  getFollowers?: (userId: string) => UserProfileType[];
+  getFollowing?: (userId: string) => UserProfileType[];
+  currentUserId?: string;
+  onUserClick?: (userId: string) => void;
 }
 
 const formatDate = (timestamp: number) => {
@@ -32,7 +37,25 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   onUnfollow,
   onEditProfile,
   isFollowing = false,
+  getFollowers,
+  getFollowing,
+  currentUserId,
+  onUserClick,
 }) => {
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
+
+  const followers = getFollowers ? getFollowers(profile.id) : [];
+  const following = getFollowing ? getFollowing(profile.id) : [];
+
+  const handleFollowClick = () => {
+    onFollow?.(profile.id);
+  };
+
+  const handleUnfollowClick = () => {
+    onUnfollow?.(profile.id);
+  };
+
   return (
     <div className="space-y-6">
       <PixelPanel className="p-6">
@@ -76,17 +99,11 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                     编辑资料
                   </button>
                 ) : (
-                  <button
-                    onClick={() => (isFollowing ? onUnfollow?.(profile.id) : onFollow?.(profile.id))}
-                    className={`flex items-center gap-2 px-4 py-2 text-xs font-pixel rounded transition-colors ${
-                      isFollowing
-                        ? 'bg-pixel-border/30 text-gray-300 hover:bg-pixel-border/50'
-                        : 'bg-pixel-accent hover:bg-pixel-accent/80 text-white'
-                    }`}
-                  >
-                    <Users size={16} />
-                    {isFollowing ? '已关注' : '关注'}
-                  </button>
+                  <FollowButton
+                    isFollowing={isFollowing}
+                    onFollow={handleFollowClick}
+                    onUnfollow={handleUnfollowClick}
+                  />
                 )}
               </div>
             </div>
@@ -112,16 +129,46 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                 value={profile.followers.length}
                 label="粉丝"
                 icon={<Users size={16} />}
+                onClick={getFollowers ? () => setShowFollowers(true) : undefined}
+                className={getFollowers ? 'cursor-pointer' : ''}
               />
               <StatCard
-                value={profile.totalLikes}
-                label="获得赞"
-                icon={<Heart size={16} />}
+                value={profile.following.length}
+                label="关注"
+                icon={<Users size={16} />}
+                onClick={getFollowing ? () => setShowFollowing(true) : undefined}
+                className={getFollowing ? 'cursor-pointer' : ''}
               />
             </div>
           </div>
         </div>
       </PixelPanel>
+
+      {showFollowers && getFollowers && currentUserId && (
+        <FollowList
+          title="粉丝列表"
+          users={followers}
+          currentUserId={currentUserId}
+          onFollow={onFollow || (() => {})}
+          onUnfollow={onUnfollow || (() => {})}
+          isFollowing={(userId) => following.some(u => u.id === userId)}
+          onUserClick={onUserClick}
+          onClose={() => setShowFollowers(false)}
+        />
+      )}
+
+      {showFollowing && getFollowing && currentUserId && (
+        <FollowList
+          title="关注列表"
+          users={following}
+          currentUserId={currentUserId}
+          onFollow={onFollow || (() => {})}
+          onUnfollow={onUnfollow || (() => {})}
+          isFollowing={(userId) => following.some(u => u.id === userId)}
+          onUserClick={onUserClick}
+          onClose={() => setShowFollowing(false)}
+        />
+      )}
 
       {works.length > 0 && (
         <div>

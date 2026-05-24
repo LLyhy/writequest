@@ -12,6 +12,7 @@ interface ShowcaseState {
   isLoading: boolean;
   selectedWork: PublishedWork | null;
   error: string | null;
+  likedWorks: string[];
 }
 
 interface ShowcaseActions {
@@ -21,8 +22,11 @@ interface ShowcaseActions {
   deletePublishedWork: (workId: string) => Promise<void>;
   likeWork: (workId: string) => Promise<void>;
   unlikeWork: (workId: string) => Promise<void>;
+  toggleLike: (workId: string) => Promise<boolean>;
+  isWorkLiked: (workId: string) => boolean;
   favoriteWork: (workId: string, userId: string) => void;
   unfavoriteWork: (workId: string, userId: string) => void;
+  fetchComments: (workId: string) => Promise<void>;
   addComment: (workId: string, content: string, parentId?: string) => Promise<void>;
   deleteComment: (workId: string, commentId: string) => Promise<void>;
   createDraft: (draft: DraftWork) => void;
@@ -76,6 +80,7 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
       isLoading: false,
       selectedWork: null,
       error: null,
+      likedWorks: [],
 
       fetchPublishedWorks: async () => {
         set({ isLoading: true, error: null });
@@ -91,12 +96,21 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
             console.log('Number of works:', works.length);
             const convertedWorks = works.map(work => convertToPublishedWork(work as any));
             
-            for (const work of convertedWorks) {
+            // 并行获取点赞数和用户点赞状态
+            const likePromises = convertedWorks.map(async (work) => {
               const likeResult = await supabaseService.like.getLikeCount(work.id);
+              const likeCheck = await supabaseService.like.checkLike(work.id);
               work.likes = likeResult.count || 0;
-            }
+              return { workId: work.id, liked: likeCheck.liked };
+            });
             
-            set({ publishedWorks: convertedWorks });
+            const likeResults = await Promise.all(likePromises);
+            const likedWorkIds = likeResults.filter(r => r.liked).map(r => r.workId);
+            
+            set({ 
+              publishedWorks: convertedWorks,
+              likedWorks: likedWorkIds
+            });
           }
         } catch (error) {
           console.error('Failed to fetch works:', error);
@@ -185,12 +199,44 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
                   ? { ...work, likes: work.likes + 1 }
                   : work
               ),
+              likedWorks: [...state.likedWorks, workId]
             }));
           }
         } catch (error) {
           console.error('Failed to like work:', error);
           set({ error: '点赞失败' });
         }
+      },
+
+      toggleLike: async (workId) => {
+        try {
+          const { data, error } = await supabaseService.like.toggleLike(workId);
+          
+          if (error) throw error;
+          
+          const isLiked = data?.liked ?? false;
+          
+          set((state) => ({
+            publishedWorks: state.publishedWorks.map((work) =>
+              work.id === workId
+                ? { ...work, likes: isLiked ? work.likes + 1 : Math.max(0, work.likes - 1) }
+                : work
+            ),
+            likedWorks: isLiked 
+              ? [...state.likedWorks, workId]
+              : state.likedWorks.filter(id => id !== workId)
+          }));
+          
+          return isLiked;
+        } catch (error) {
+          console.error('Failed to toggle like:', error);
+          set({ error: '操作失败' });
+          return false;
+        }
+      },
+
+      isWorkLiked: (workId) => {
+        return get().likedWorks.includes(workId);
       },
 
       unlikeWork: async (workId) => {
@@ -206,6 +252,7 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
                   ? { ...work, likes: Math.max(0, work.likes - 1) }
                   : work
               ),
+              likedWorks: state.likedWorks.filter(id => id !== workId)
             }));
           }
         } catch (error) {
@@ -240,6 +287,37 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
             };
           }),
         }));
+      },
+
+      fetchComments: async (workId) => {
+        try {
+          const { comments, error } = await supabaseService.comment.getComments(workId);
+          
+          if (error) throw error;
+          
+          if (comments) {
+            const convertedComments: Comment[] = comments.map((comment: any) => ({
+              id: comment.id,
+              userId: comment.user_id,
+              userName: comment.profiles?.display_name || comment.profiles?.username || '匿名',
+              userAvatar: comment.profiles?.avatar_url || '',
+              content: comment.content,
+              createdAt: new Date(comment.created_at).getTime(),
+              parentId: comment.parent_id,
+            }));
+            
+            set((state) => ({
+              publishedWorks: state.publishedWorks.map((work) =>
+                work.id === workId
+                  ? { ...work, comments: convertedComments }
+                  : work
+              ),
+            }));
+          }
+        } catch (error) {
+          console.error('Failed to fetch comments:', error);
+          set({ error: '获取评论失败' });
+        }
       },
 
       addComment: async (workId, content, parentId) => {
@@ -398,6 +476,7 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
         draftWorks: state.draftWorks,
         currentSort: state.currentSort,
         currentFilter: state.currentFilter,
+        likedWorks: state.likedWorks,
       }),
     }
   )

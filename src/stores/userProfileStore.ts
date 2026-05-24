@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { useAuthStore } from './authStore';
 import type { UserProfile } from '../types/showcase';
 
 interface UserProfileState {
@@ -24,7 +23,7 @@ interface UserProfileActions {
   addToTotalWorks: (amount: number) => void;
   addToTotalWords: (amount: number) => void;
   resetProfile: () => void;
-  syncFromAuthStore: () => void;
+  syncFromAuthProfile: (authProfile: UserProfile) => void;
 }
 
 export const useUserProfileStore = create<UserProfileState & UserProfileActions>()(
@@ -34,9 +33,8 @@ export const useUserProfileStore = create<UserProfileState & UserProfileActions>
       allProfiles: [],
       isLoading: false,
 
-      syncFromAuthStore: () => {
-        const authProfile = useAuthStore.getState().profile;
-        if (authProfile && authProfile.id && (!get().currentUser || get().currentUser?.id !== authProfile.id)) {
+      syncFromAuthProfile: (authProfile) => {
+        if (authProfile && authProfile.id) {
           set((state) => {
             const existingProfile = state.allProfiles.find(p => p.id === authProfile.id);
             if (!existingProfile) {

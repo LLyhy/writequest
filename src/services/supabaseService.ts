@@ -22,15 +22,27 @@ export const authService = {
       },
     });
     
-    if (data?.user) {
-      await supabase.from('profiles').insert({
-        id: data.user.id,
-        username,
-        display_name: username,
-      });
+    if (error) {
+      return { data, error };
     }
     
-    return { data, error };
+    if (data?.user) {
+      try {
+        const { error: profileError } = await supabase.from('profiles').insert({
+          id: data.user.id,
+          username,
+          display_name: username,
+        });
+        
+        if (profileError) {
+          console.error('Failed to create profile:', profileError);
+        }
+      } catch (err) {
+        console.error('Error inserting profile:', err);
+      }
+    }
+    
+    return { data, error: null };
   },
 
   async signIn(email: string, password: string) {
@@ -42,29 +54,48 @@ export const authService = {
   },
 
   async signOut() {
-    const { error } = await supabase.auth.signOut();
-    return { error };
+    try {
+      const { error } = await supabase.auth.signOut();
+      return { error };
+    } catch (err) {
+      console.error('Sign out error:', err);
+      return { error: err };
+    }
   },
 
   async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    } catch (err) {
+      console.error('Get current user error:', err);
+      return null;
+    }
   },
 
   async getCurrentProfile(): Promise<{ profile: Profile | null; error: any }> {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      return { profile: null, error: null };
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        return { profile: null, error: null };
+      }
+
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .limit(1);
+
+      if (error) {
+        return { profile: null, error };
+      }
+
+      return { profile: profiles && profiles.length > 0 ? profiles[0] : null, error: null };
+    } catch (err) {
+      console.error('Get current profile error:', err);
+      return { profile: null, error: err };
     }
-
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    return { profile, error };
   },
 
   async updateProfile(profile: Partial<Profile>) {

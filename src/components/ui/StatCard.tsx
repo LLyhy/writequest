@@ -8,6 +8,8 @@ interface StatCardProps {
   subValue?: string;
   color?: 'primary' | 'secondary' | 'accent' | 'danger';
   showSuffix?: boolean;
+  onClick?: () => void;
+  className?: string;
 }
 
 const colorStyles = {
@@ -30,12 +32,15 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subValue,
   color = 'primary',
+  onClick,
+  className = '',
 }) => {
   return (
     <motion.div
-      className={`pixel-panel p-3 border-2 ${colorStyles[color]}`}
+      className={`pixel-panel p-3 border-2 ${colorStyles[color]} ${className}`}
       whileHover={{ y: -2 }}
       transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      onClick={onClick}
     >
       <div className="flex items-start gap-3">
         <div className={`${iconColors[color]} mt-1`}>{icon}</div>

@@ -4,3 +4,5 @@ export { PublishModal } from './PublishModal';
 export { DraftBox } from './DraftBox';
 export { UserProfile } from './UserProfile';
 export { Leaderboard } from './Leaderboard';
+export { CommentInput } from './CommentInput';
+export { CommentSection } from './CommentSection';

@@ -8,11 +8,11 @@ import {
   Calendar,
   User,
   FileText,
-  Send,
 } from 'lucide-react';
-import { PixelPanel, PixelButton, PixelInput } from '../ui';
+import { PixelPanel, PixelButton } from '../ui';
 import { useShowcaseStore } from '../../stores/showcaseStore';
 import { useUserProfileStore } from '../../stores/userProfileStore';
+import { CommentSection } from './CommentSection';
 import type { PublishedWork } from '../../types/showcase';
 
 interface WorkDetailProps {
@@ -30,7 +30,6 @@ const formatDate = (timestamp: number) => {
 };
 
 export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
-  const [commentInput, setCommentInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     likeWork,
@@ -39,12 +38,14 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
     unfavoriteWork,
     addComment,
     incrementViews,
+    fetchComments,
   } = useShowcaseStore();
   const { currentUser } = useUserProfileStore();
 
   useEffect(() => {
     incrementViews(work.id);
-  }, [work.id, incrementViews]);
+    fetchComments(work.id);
+  }, [work.id, incrementViews, fetchComments]);
 
   const isLiked = currentUser ? work.likedBy.includes(currentUser.id) : false;
   const isFavorited = currentUser
@@ -69,12 +70,11 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
     }
   };
 
-  const handleComment = async () => {
-    if (!currentUser || !commentInput.trim()) return;
+  const handleAddComment = async (content: string, parentId?: string) => {
+    if (!currentUser || !content.trim()) return;
     setIsSubmitting(true);
 
-    addComment(work.id, commentInput.trim());
-    setCommentInput('');
+    await addComment(work.id, content.trim(), parentId);
     setIsSubmitting(false);
   };
 
@@ -170,64 +170,12 @@ export const WorkDetail: React.FC<WorkDetailProps> = ({ work, onClose }) => {
                 </div>
               </div>
 
-              <div>
-                <h2 className="font-pixel text-lg text-white mb-4">评论区</h2>
-
-                {currentUser && (
-                  <div className="flex gap-3 mb-6">
-                    <PixelInput
-                      placeholder="写下你的评论..."
-                      value={commentInput}
-                      onChange={(e) => setCommentInput(e.target.value)}
-                      className="flex-1"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleComment();
-                        }
-                      }}
-                    />
-                    <PixelButton
-                      variant="primary"
-                      onClick={handleComment}
-                      isLoading={isSubmitting}
-                      className="flex items-center gap-2"
-                    >
-                      <Send size={16} />
-                      发送
-                    </PixelButton>
-                  </div>
-                )}
-
-                <div className="space-y-4">
-                  {work.comments.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 font-mono">
-                      暂无评论，快来抢沙发吧！
-                    </div>
-                  ) : (
-                    work.comments.map((comment) => (
-                      <motion.div
-                        key={comment.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="bg-pixel-bg/30 p-4 rounded border border-pixel-border/20"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-pixel text-sm text-pixel-primary">
-                            {comment.userName}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {formatDate(comment.createdAt)}
-                          </span>
-                        </div>
-                        <p className="text-gray-300 font-mono text-sm">
-                          {comment.content}
-                        </p>
-                      </motion.div>
-                    ))
-                  )}
-                </div>
-              </div>
+              <CommentSection
+                comments={work.comments}
+                currentUser={currentUser}
+                onAddComment={handleAddComment}
+                isSubmitting={isSubmitting}
+              />
             </div>
           </PixelPanel>
         </motion.div>

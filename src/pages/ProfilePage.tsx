@@ -17,6 +17,8 @@ export function ProfilePage({ onBack, userId }: ProfilePageProps) {
     unfollowUser,
     isFollowing,
     getProfile,
+    getFollowers,
+    getFollowing,
   } = useUserProfileStore();
   const { getWorksByAuthor } = useShowcaseStore();
   const character = useCharacterStore((state) => state.character);
@@ -86,6 +88,9 @@ export function ProfilePage({ onBack, userId }: ProfilePageProps) {
           onFollow={followUser}
           onUnfollow={unfollowUser}
           isFollowing={following}
+          getFollowers={getFollowers}
+          getFollowing={getFollowing}
+          currentUserId={currentUser?.id}
           onEditProfile={() => {
             // 编辑资料功能可以在这里扩展
             console.log('Edit profile');
