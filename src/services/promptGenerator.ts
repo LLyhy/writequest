@@ -1,11 +1,11 @@
-interface PromptOptions {
+export interface PromptOptions {
   genre?: 'fantasy' | 'scifi' | 'romance' | 'mystery' | 'horror' | 'slice_of_life' | 'poetry';
   length?: 'short' | 'medium' | 'long';
   mood?: 'happy' | 'sad' | 'exciting' | 'mysterious' | 'peaceful';
   focus?: 'character' | 'plot' | 'setting' | 'dialogue';
 }
 
-interface WritingPrompt {
+export interface WritingPrompt {
   id: string;
   title: string;
   content: string;
@@ -201,7 +201,7 @@ const GENERAL_PROMPTS = [
 
 // 生成提示词
 export function generatePrompts(options: PromptOptions = {}): WritingPrompt[] {
-  const { genre, length, mood, focus } = options;
+  const { genre, focus } = options;
   
   let pool: WritingPrompt[] = [...GENERAL_PROMPTS];
   

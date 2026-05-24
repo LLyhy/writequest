@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, User } from 'lucide-react';
 import { CommentInput } from './CommentInput';
-import { PixelPanel } from '../ui';
 import type { Comment as CommentType } from '../../types/showcase';
 
 interface CommentSectionProps {

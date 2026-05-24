@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { User, X, Users } from 'lucide-react';
 import { PixelButton, PixelPanel } from '../ui';
@@ -34,17 +34,18 @@ export const FollowList: React.FC<FollowListProps> = ({
       className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
-      <PixelPanel
+      <div
         className="max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
+        <PixelPanel className="flex flex-col h-full">
         <div className="flex items-center justify-between p-4 border-b border-pixel-border">
           <div className="flex items-center gap-2">
             <Users size={20} className="text-pixel-accent" />
             <h2 className="font-pixel text-white text-lg">{title}</h2>
             <span className="text-gray-400 text-sm">({users.length})</span>
           </div>
-          <PixelButton variant="ghost" size="sm" onClick={onClose}>
+          <PixelButton variant="secondary" size="sm" onClick={onClose}>
             <X size={20} />
           </PixelButton>
         </div>
@@ -103,6 +104,7 @@ export const FollowList: React.FC<FollowListProps> = ({
           )}
         </div>
       </PixelPanel>
+      </div>
     </motion.div>
   );
 };

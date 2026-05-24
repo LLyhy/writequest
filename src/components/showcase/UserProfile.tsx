@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, PenTool, Calendar, Users, Heart, BookOpen, Edit } from 'lucide-react';
+import { User, PenTool, Calendar, Users, BookOpen, Edit } from 'lucide-react';
 import { PixelPanel, StatCard } from '../ui';
 import { WorkCard } from './WorkCard';
 import { FollowButton, FollowList } from '../profile';
