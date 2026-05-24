@@ -128,41 +128,41 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* 右侧操作 */}
           <motion.div
-            className="flex items-center gap-3"
+            className="flex items-center gap-2"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <CoinDisplay amount={coins} size="md" />
+            <CoinDisplay amount={coins} size="sm" />
 
-            <div className="flex items-center gap-2 ml-4">
+            <div className="flex items-center gap-1">
               {character && (
                 <>
                   <PixelButton
                     variant="secondary"
                     size="sm"
                     onClick={() => setShowTutorial(true)}
-                    className="p-2"
+                    className="p-1.5"
                     title="新手引导"
                   >
-                    <HelpCircle size={16} />
+                    <HelpCircle size={14} />
                   </PixelButton>
                   <PixelButton
                     variant="secondary"
                     size="sm"
                     onClick={() => setShowExportModal(true)}
-                    className="p-2"
+                    className="p-1.5 hidden sm:flex"
                     title="导出数据"
                   >
-                    <Database size={16} />
+                    <Database size={14} />
                   </PixelButton>
                   <PixelButton
                     variant="secondary"
                     size="sm"
                     onClick={() => setShowImportModal(true)}
-                    className="p-2"
+                    className="p-1.5 hidden sm:flex"
                     title="导入数据"
                   >
-                    <Database size={16} />
+                    <Database size={14} />
                   </PixelButton>
                 </>
               )}
@@ -170,9 +170,9 @@ export const Header: React.FC<HeaderProps> = ({
                 variant="secondary"
                 size="sm"
                 onClick={onSettingsClick}
-                className="p-2"
+                className="p-1.5"
               >
-                <Settings size={16} />
+                <Settings size={14} />
               </PixelButton>
 
               {character && (
@@ -180,9 +180,9 @@ export const Header: React.FC<HeaderProps> = ({
                   variant="danger"
                   size="sm"
                   onClick={handleReset}
-                  className="p-2"
+                  className="p-1.5 hidden sm:flex"
                 >
-                  <LogOut size={16} />
+                  <LogOut size={14} />
                 </PixelButton>
               )}
             </div>
