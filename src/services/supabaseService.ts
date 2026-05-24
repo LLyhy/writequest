@@ -2,6 +2,15 @@ import { supabase, type Profile, type Work, type Comment } from '../lib/supabase
 
 export const authService = {
   async signUp(email: string, password: string, username: string) {
+    // 自动检测当前环境的 URL
+    const getRedirectUrl = () => {
+      if (typeof window !== 'undefined') {
+        return window.location.origin;
+      }
+      // 默认回退
+      return 'http://localhost:5173';
+    };
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -9,6 +18,7 @@ export const authService = {
         data: {
           username,
         },
+        emailRedirectTo: getRedirectUrl(),
       },
     });
     
