@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   Hash,
+  Type,
 } from 'lucide-react';
 import { PixelPanel, PixelButton, PixelInput } from '../ui';
 import { useShowcaseStore } from '../../stores/showcaseStore';
