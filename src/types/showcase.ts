@@ -34,17 +34,20 @@ export interface Comment {
 
 export interface UserProfile {
   id: string;
+  username?: string;
   displayName: string;
-  characterName: string;
-  bio: string;
+  characterName?: string;
   avatar?: string;
+  avatarUrl?: string;
+  bio?: string;
   characterClass?: string;
   followers: string[];
   following: string[];
   totalLikes: number;
   totalWorks: number;
   totalWords: number;
-  joinedAt: number;
+  joinedAt?: number;
+  createdAt?: number;
 }
 
 export interface DraftWork {

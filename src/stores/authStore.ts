@@ -25,41 +25,50 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     profile: null,
 
     checkAuth: async () => {
-      set({ isLoading: true });
-      try {
-        const user = await supabaseService.auth.getCurrentUser();
-        
-        if (user) {
-          const { profile } = await supabaseService.auth.getCurrentProfile();
+        set({ isLoading: true });
+        try {
+          const user = await supabaseService.auth.getCurrentUser();
           
-          if (profile) {
-            set({
-              isAuthenticated: true,
-              user,
-              profile: {
-                id: profile.id,
-                username: profile.username,
-                displayName: profile.display_name || profile.username,
-                avatarUrl: profile.avatar_url || '',
-                bio: '',
-                followers: [],
-                following: [],
-                totalLikes: 0,
-                totalWorks: 0,
-                totalWords: 0,
-                createdAt: new Date(profile.created_at).getTime(),
-              },
-              isLoading: false,
-            });
+          if (user) {
+            const { profile } = await supabaseService.auth.getCurrentProfile();
+            
+            if (profile) {
+              set({
+                isAuthenticated: true,
+                user,
+                profile: {
+                  id: profile.id,
+                  username: profile.username,
+                  displayName: profile.display_name || profile.username,
+                  avatarUrl: profile.avatar_url || '',
+                  bio: '',
+                  followers: [],
+                  following: [],
+                  totalLikes: 0,
+                  totalWorks: 0,
+                  totalWords: 0,
+                  createdAt: new Date(profile.created_at).getTime(),
+                },
+                isLoading: false,
+              });
+            } else {
+              set({
+                isAuthenticated: true,
+                user,
+                profile: null,
+                isLoading: false,
+              });
+            }
           } else {
             set({
-              isAuthenticated: true,
-              user,
+              isAuthenticated: false,
+              user: null,
               profile: null,
               isLoading: false,
             });
           }
-        } else {
+        } catch (error) {
+          console.error('Auth check failed:', error);
           set({
             isAuthenticated: false,
             user: null,
@@ -67,42 +76,33 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             isLoading: false,
           });
         }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        set({
-          isAuthenticated: false,
-          user: null,
-          profile: null,
-          isLoading: false,
-        });
-      }
-    },
+      },
 
-    login: async (email: string, password: string) => {
-      try {
-        const { data, error } = await supabaseService.auth.signIn(email, password);
-        
-        if (error) throw error;
-        
-        await get().checkAuth();
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message || '登录失败' };
-      }
-    },
+      login: async (email: string, password: string) => {
+        try {
+          const { error } = await supabaseService.auth.signIn(email, password);
+          
+          if (error) throw error;
+          
+          await get().checkAuth();
+          return { success: true };
+        } catch (error: any) {
+          return { success: false, error: error.message || '登录失败' };
+        }
+      },
 
-    signup: async (email: string, password: string, username: string) => {
-      try {
-        const { data, error } = await supabaseService.auth.signUp(email, password, username);
-        
-        if (error) throw error;
-        
-        await get().checkAuth();
-        return { success: true };
-      } catch (error: any) {
-        return { success: false, error: error.message || '注册失败' };
-      }
-    },
+      signup: async (email: string, password: string, username: string) => {
+        try {
+          const { error } = await supabaseService.auth.signUp(email, password, username);
+          
+          if (error) throw error;
+          
+          await get().checkAuth();
+          return { success: true };
+        } catch (error: any) {
+          return { success: false, error: error.message || '注册失败' };
+        }
+      },
 
     logout: async () => {
       try {

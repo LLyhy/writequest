@@ -323,10 +323,13 @@ export const PublishModal: React.FC<PublishModalProps> = ({
       
       <AuthModal
         isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={() => {
+        onClose={() => {
           setShowAuthModal(false);
-          setIsSupabaseLoggedIn(true);
+          // 登录成功后检查状态
+          setTimeout(async () => {
+            const user = await supabaseService.auth.getCurrentUser();
+            setIsSupabaseLoggedIn(!!user);
+          }, 100);
         }}
       />
     </AnimatePresence>

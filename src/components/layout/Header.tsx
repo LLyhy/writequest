@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   const resetCharacter = useCharacterStore((state) => state.resetCharacter);
   const coins = useGameStore((state) => state.coins);
   const { completed: tutorialCompleted } = useTutorialStore();
-  const { isAuthenticated, profile, logout } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
   const [showExportModal, setShowExportModal] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);

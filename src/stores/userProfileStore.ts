@@ -36,7 +36,7 @@ export const useUserProfileStore = create<UserProfileState & UserProfileActions>
 
       syncFromAuthStore: () => {
         const authProfile = useAuthStore.getState().profile;
-        if (authProfile && (!get().currentUser || get().currentUser.id !== authProfile.id)) {
+        if (authProfile && authProfile.id && (!get().currentUser || get().currentUser?.id !== authProfile.id)) {
           set((state) => {
             const existingProfile = state.allProfiles.find(p => p.id === authProfile.id);
             if (!existingProfile) {
