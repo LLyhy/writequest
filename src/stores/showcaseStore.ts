@@ -82,12 +82,15 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
         try {
           const { works, error } = await supabaseService.work.getPublishedWorks(1, 50);
           
+          console.log('Fetched works:', works);
+          console.log('Fetch error:', error);
+          
           if (error) throw error;
           
           if (works) {
+            console.log('Number of works:', works.length);
             const convertedWorks = works.map(work => convertToPublishedWork(work as any));
             
-            // Fetch like counts for each work
             for (const work of convertedWorks) {
               const likeResult = await supabaseService.like.getLikeCount(work.id);
               work.likes = likeResult.count || 0;
@@ -109,7 +112,7 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
           const user = await supabaseService.auth.getCurrentUser();
           if (!user) throw new Error('请先登录');
 
-          const { error } = await supabaseService.work.createWork({
+          const { data, error } = await supabaseService.work.createWork({
             user_id: user.id,
             title: workData.title,
             content: workData.content,
@@ -120,9 +123,11 @@ export const useShowcaseStore = create<ShowcaseState & ShowcaseActions>()(
             published_at: new Date().toISOString(),
           });
 
+          console.log('Publish result:', data);
+          console.log('Publish error:', error);
+
           if (error) throw error;
 
-          // Refresh the list
           await get().fetchPublishedWorks();
         } catch (error) {
           console.error('Failed to publish work:', error);
