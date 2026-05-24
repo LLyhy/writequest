@@ -70,16 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <Home size={12} />
                 <span>返回</span>
               </button>
-            ) : (
-              <a
-                href="/"
-                className="hidden sm:flex items-center gap-1 px-2 py-1 text-xs text-gray-500 hover:text-pixel-accent transition-colors border border-pixel-border hover:border-pixel-accent rounded"
-                title="返回首页"
-              >
-                <Home size={12} />
-                <span>首页</span>
-              </a>
-            )}
+            ) : null}
             {/* 新导航链接 */}
             {character && (
               <div className="flex items-center gap-2 ml-2">

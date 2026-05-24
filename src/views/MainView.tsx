@@ -320,98 +320,6 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
       {viewMode === 'main' && (
         <DailyQuests onQuestComplete={handleQuestComplete} />
       )}
-      <AnimatePresence mode="wait">
-        {viewMode === 'boss' && (
-          <motion.div
-            key="boss"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <BossSelect onSelectBoss={handleSelectBoss} />
-          </motion.div>
-        )}
-        {viewMode === 'skills' && (
-          <motion.div
-            key="skills"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <SkillTree />
-          </motion.div>
-        )}
-        {viewMode === 'achievements' && (
-          <motion.div
-            key="achievements"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <AchievementPanel />
-          </motion.div>
-        )}
-        {viewMode === 'stats' && (
-          <motion.div
-            key="stats"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <StatsPanel />
-          </motion.div>
-        )}
-        {viewMode === 'map' && (
-          <motion.div
-            key="map"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <WorldMap onClose={() => setViewMode('main')} />
-          </motion.div>
-        )}
-        {viewMode === 'story' && (
-          <motion.div
-            key="story"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <StoryPanel onClose={() => setViewMode('main')} />
-          </motion.div>
-        )}
-        {viewMode === 'shop' && (
-          <motion.div
-            key="shop"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <ShopPanel onClose={() => setViewMode('main')} />
-          </motion.div>
-        )}
-        {viewMode === 'collection' && (
-          <motion.div
-            key="collection"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <CollectionPanel onClose={() => setViewMode('main')} />
-          </motion.div>
-        )}
-        {viewMode === 'character' && (
-          <motion.div
-            key="character"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
-            <CharacterPanel />
-          </motion.div>
-        )}
-      </AnimatePresence>
       {viewMode === 'main' && <WordCounter />}
     </div>
   );
@@ -451,6 +359,177 @@ export function MainView({ onNavigateToShowcase, onNavigateToProfile }: MainView
                 </PixelButton>
               </div>
               <AdventureModePanel onClose={() => setViewMode('main')} />
+            </motion.div>
+          ) : viewMode === 'boss' ? (
+            <motion.div
+              key="boss"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <BossSelect onSelectBoss={handleSelectBoss} />
+            </motion.div>
+          ) : viewMode === 'skills' ? (
+            <motion.div
+              key="skills"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <SkillTree />
+            </motion.div>
+          ) : viewMode === 'achievements' ? (
+            <motion.div
+              key="achievements"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <AchievementPanel />
+            </motion.div>
+          ) : viewMode === 'stats' ? (
+            <motion.div
+              key="stats"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <StatsPanel />
+            </motion.div>
+          ) : viewMode === 'map' ? (
+            <motion.div
+              key="map"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <WorldMap onClose={() => setViewMode('main')} />
+            </motion.div>
+          ) : viewMode === 'story' ? (
+            <motion.div
+              key="story"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <StoryPanel onClose={() => setViewMode('main')} />
+            </motion.div>
+          ) : viewMode === 'shop' ? (
+            <motion.div
+              key="shop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <ShopPanel onClose={() => setViewMode('main')} />
+            </motion.div>
+          ) : viewMode === 'collection' ? (
+            <motion.div
+              key="collection"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <CollectionPanel onClose={() => setViewMode('main')} />
+            </motion.div>
+          ) : viewMode === 'character' ? (
+            <motion.div
+              key="character"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-full"
+            >
+              <div className="mb-4">
+                <PixelButton
+                  variant="secondary"
+                  size="md"
+                  onClick={() => setViewMode('main')}
+                >
+                  ← 返回主界面
+                </PixelButton>
+              </div>
+              <CharacterPanel />
             </motion.div>
           ) : (
             <motion.div
