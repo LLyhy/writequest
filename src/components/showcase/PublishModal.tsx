@@ -8,8 +8,6 @@ import {
   Eye,
   EyeOff,
   Hash,
-  Type,
-  LogIn,
 } from 'lucide-react';
 import { PixelPanel, PixelButton, PixelInput } from '../ui';
 import { useShowcaseStore } from '../../stores/showcaseStore';
@@ -57,7 +55,7 @@ export const PublishModal: React.FC<PublishModalProps> = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isSupabaseLoggedIn, setIsSupabaseLoggedIn] = useState(false);
 
-  const { publishWork, createDraft, fetchPublishedWorks } = useShowcaseStore();
+  const { publishWork, createDraft } = useShowcaseStore();
   const { currentUser, addToTotalWorks, addToTotalWords } = useUserProfileStore();
 
   useEffect(() => {
