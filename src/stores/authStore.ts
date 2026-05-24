@@ -15,35 +15,14 @@ interface AuthActions {
   signup: (email: string, password: string, username: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   setLoading: (loading: boolean) => void;
-  syncProfileToUserStore: () => void;
 }
 
-// 循环引用解决：懒加载 userProfileStore
-let userProfileStore: any = null;
-
 export const useAuthStore = create<AuthState & AuthActions>()(
-  (set, get) => ({
+  (set) => ({
     isAuthenticated: false,
     isLoading: true,
     user: null,
     profile: null,
-
-    syncProfileToUserStore: () => {
-      if (!userProfileStore) {
-        try {
-          const { useUserProfileStore: store } = require('./userProfileStore');
-          userProfileStore = store;
-        } catch (e) {
-          console.error('Failed to load userProfileStore:', e);
-          return;
-        }
-      }
-      
-      const { profile } = get();
-      if (profile) {
-        userProfileStore.getState().syncFromAuthProfile(profile);
-      }
-    },
 
     checkAuth: async () => {
         set({ isLoading: true });
@@ -76,10 +55,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
               profile: userProfile,
               isLoading: false,
             });
-            
-            if (userProfile) {
-              get().syncProfileToUserStore();
-            }
           } else {
             set({
               isAuthenticated: false,
@@ -87,19 +62,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
               profile: null,
               isLoading: false,
             });
-            
-            // 重置 user profile store
-            if (!userProfileStore) {
-              try {
-                const { useUserProfileStore: store } = require('./userProfileStore');
-                userProfileStore = store;
-              } catch (e) {
-                console.error('Failed to load userProfileStore:', e);
-              }
-            }
-            if (userProfileStore) {
-              userProfileStore.getState().resetProfile();
-            }
           }
         } catch (error) {
           console.error('Auth check failed:', error);
@@ -109,19 +71,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             profile: null,
             isLoading: false,
           });
-          
-          // 重置 user profile store
-          if (!userProfileStore) {
-            try {
-              const { useUserProfileStore: store } = require('./userProfileStore');
-              userProfileStore = store;
-            } catch (e) {
-              console.error('Failed to load userProfileStore:', e);
-            }
-          }
-          if (userProfileStore) {
-            userProfileStore.getState().resetProfile();
-          }
         }
       },
 
@@ -133,7 +82,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             return { success: false, error: error.message || '登录失败' };
           }
           
-          await get().checkAuth();
+          await useAuthStore.getState().checkAuth();
           return { success: true };
         } catch (error: any) {
           console.error('Login error:', error);
@@ -149,7 +98,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
             return { success: false, error: error.message || '注册失败' };
           }
           
-          await get().checkAuth();
+          await useAuthStore.getState().checkAuth();
           return { success: true };
         } catch (error: any) {
           console.error('Signup error:', error);
@@ -169,19 +118,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           profile: null,
           isLoading: false,
         });
-        
-        // 重置 user profile store
-        if (!userProfileStore) {
-          try {
-            const { useUserProfileStore: store } = require('./userProfileStore');
-            userProfileStore = store;
-          } catch (e) {
-            console.error('Failed to load userProfileStore:', e);
-          }
-        }
-        if (userProfileStore) {
-          userProfileStore.getState().resetProfile();
-        }
       }
     },
 

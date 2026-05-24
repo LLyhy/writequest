@@ -203,11 +203,14 @@ const GENERAL_PROMPTS = [
 export function generatePrompts(options: PromptOptions = {}): WritingPrompt[] {
   const { genre, focus } = options;
   
-  let pool: WritingPrompt[] = [...GENERAL_PROMPTS];
+  const generalPrompts: WritingPrompt[] = GENERAL_PROMPTS.map(p => ({ ...p, id: '' }));
+  
+  let pool: WritingPrompt[] = [...generalPrompts];
   
   // 如果选择了类型，添加类型特定的提示
   if (genre && PROMPT_TEMPLATES[genre]) {
-    pool = [...pool, ...PROMPT_TEMPLATES[genre]];
+    const genrePrompts = PROMPT_TEMPLATES[genre].map(p => ({ ...p, id: '' }));
+    pool = [...pool, ...genrePrompts];
   }
   
   // 打乱并选择3-5个提示
