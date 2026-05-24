@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ArrowLeft, TrendingUp, Users, Flame, SortDesc } from 'lucide-react';
+import { Search, ArrowLeft, TrendingUp, Users, Flame, SortDesc, Loader2, RefreshCw } from 'lucide-react';
 import { useShowcaseStore } from '../stores';
 import { WorkCard, WorkDetail, Leaderboard } from '../components/showcase';
 import { PixelPanel, PixelButton, PixelInput } from '../components/ui';
@@ -21,7 +21,15 @@ export function ShowcasePage({ onBack }: { onBack: () => void }) {
     getSortedWorks,
     selectWork,
     incrementViews,
+    fetchPublishedWorks,
+    isLoading,
+    error,
   } = useShowcaseStore();
+
+  // Fetch works when component mounts
+  useEffect(() => {
+    fetchPublishedWorks();
+  }, [fetchPublishedWorks]);
 
   const works = getSortedWorks();
 
@@ -176,7 +184,23 @@ export function ShowcasePage({ onBack }: { onBack: () => void }) {
 
           {/* Main Content */}
           <div className="lg:col-span-9">
-            {filteredWorks.length > 0 ? (
+            {isLoading ? (
+              <PixelPanel className="p-12 text-center">
+                <Loader2 className="w-12 h-12 text-pixel-accent mx-auto mb-4 animate-spin" />
+                <h3 className="font-pixel text-white text-lg mb-2">加载中...</h3>
+                <p className="text-gray-400 text-sm">正在获取作品列表</p>
+              </PixelPanel>
+            ) : error ? (
+              <PixelPanel className="p-12 text-center">
+                <div className="text-red-500 text-4xl mb-4">⚠️</div>
+                <h3 className="font-pixel text-white text-lg mb-2">加载失败</h3>
+                <p className="text-gray-400 text-sm mb-4">{error}</p>
+                <PixelButton onClick={fetchPublishedWorks} className="flex items-center gap-2 mx-auto">
+                  <RefreshCw size={16} />
+                  重试
+                </PixelButton>
+              </PixelPanel>
+            ) : filteredWorks.length > 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
